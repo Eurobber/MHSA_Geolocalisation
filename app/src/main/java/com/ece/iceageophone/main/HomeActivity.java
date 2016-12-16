@@ -52,7 +52,7 @@ public class HomeActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.SEND_SMS},1);
+        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.SEND_SMS, Manifest.permission.RECEIVE_SMS}, 1);
     }
 
     @Override
@@ -159,7 +159,7 @@ public class HomeActivity extends AppCompatActivity
 
         SmsManager smsManager = SmsManager.getDefault();
 
-        smsManager.sendTextMessage(phoneNumber, null, createSmsBody("Je teste l'appli chiffrée", "Password"), null, null);
+        smsManager.sendTextMessage(phoneNumber, null, createSmsBody(text, "Password"), null, null);
     }
 
     protected String createSmsBody(String request, String password)
