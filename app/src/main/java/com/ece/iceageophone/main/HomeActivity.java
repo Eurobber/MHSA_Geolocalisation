@@ -159,7 +159,7 @@ public class HomeActivity extends AppCompatActivity
 
         SmsManager smsManager = SmsManager.getDefault();
 
-        smsManager.sendTextMessage(phoneNumber, null, createSmsBody("Je teste l'appli chiffrée", "Test"), null, null);
+        smsManager.sendTextMessage(phoneNumber, null, createSmsBody("Je teste l'appli chiffrée", "Password"), null, null);
     }
 
     protected String createSmsBody(String request, String password)
