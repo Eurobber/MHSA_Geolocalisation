@@ -19,6 +19,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.ece.iceageophone.main.R;
+import com.ece.iceageophone.main.util.Command;
+import com.ece.iceageophone.main.util.CommandSender;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -50,7 +52,13 @@ public class HomeActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.SEND_SMS, Manifest.permission.RECEIVE_SMS}, 1);
+        ActivityCompat.requestPermissions(
+                this,
+                new String[]{
+                Manifest.permission.SEND_SMS,
+                Manifest.permission.RECEIVE_SMS,
+                Manifest.permission.ACCESS_FINE_LOCATION},
+                1);
     }
 
     @Override
@@ -142,63 +150,9 @@ public class HomeActivity extends AppCompatActivity
         sendSmsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sendSmsMessage(phoneNumberEditText.getText().toString(), smsBodyEditText.getText().toString());
+                CommandSender.sendCommand(Command.GET_LOCATION, phoneNumberEditText.getText().toString(), smsBodyEditText.getText().toString());
             }
         });
     }
 
-    /**
-     * Sends a text message to a phone number
-     * @param phoneNumber
-     * @param text
-     */
-    protected void sendSmsMessage(String phoneNumber, String text) {
-        Log.d(TAG, "Sending text message \"" + text + "\" to " + phoneNumber);
-
-        SmsManager smsManager = SmsManager.getDefault();
-
-        smsManager.sendTextMessage(phoneNumber, null, createSmsBody(text, "Password"), null, null);
-    }
-
-    protected String createSmsBody(String request, String password)
-    {
-        final String opener = "Ice-aGeoPhone usingPWD:";
-        final String separator = " // ";
-        String finalMessage = null;
-
-        try {
-            finalMessage = opener+sha1smsMessage(password)+separator+request;
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        return finalMessage;
-    }
-
-    /**
-     *
-     * @param str
-     * @return
-     * @throws NoSuchAlgorithmException
-     * @throws UnsupportedEncodingException
-     */
-    protected String sha1smsMessage(String str)
-            throws NoSuchAlgorithmException, UnsupportedEncodingException
-    {
-        MessageDigest md = MessageDigest.getInstance("SHA1");
-        md.reset();
-        byte[] buffer = str.getBytes("UTF-8");
-        md.update(buffer);
-        byte[] digest = md.digest();
-
-        String hexCode = "";
-
-        for (int i = 0; i < digest.length; i++) {
-            hexCode +=  Integer.toString( ( digest[i] & 0xff ) + 0x100, 16).substring(1);
-        }
-
-        return hexCode;
-    }
 }

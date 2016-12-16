@@ -13,11 +13,6 @@
     tools:context="com.ece.iceageophone.main.activity.HomeActivity"
     tools:showIn="@layout/home_app_bar">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!" />
-
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -34,7 +29,6 @@
         android:ems="10"
         android:layout_marginTop="73dp"
         android:id="@+id/phone_number_edit_text"
-        android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true"
         android:hint="@string/phone_number" />
 
@@ -49,4 +43,5 @@
         android:layout_marginTop="71dp"
         android:id="@+id/sms_body_edit_text"
         android:hint="@string/sms_body" />
+
 </RelativeLayout>
