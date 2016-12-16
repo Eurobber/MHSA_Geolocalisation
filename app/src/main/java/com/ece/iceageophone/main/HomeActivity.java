@@ -45,6 +45,8 @@ public class HomeActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.SEND_SMS},1);
     }
 
     @Override
@@ -127,7 +129,6 @@ public class HomeActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
         // On demande à l'utilisateur la permission d'envoyer des SMS
-        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.SEND_SMS},1);
         Log.d(TAG, "Start application");
 
         phoneNumberEditText = (EditText) findViewById(R.id.phone_number_edit_text);
