@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".HomeActivity"
+            android:name=".activity.HomeActivity"
             android:label="@string/home_screen"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -18,32 +18,32 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ContactActivity"
+            android:name=".activity.ContactActivity"
             android:label="@string/contact_screen"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".LocateActivity"
+            android:name=".activity.LocateActivity"
             android:label="@string/locate_screen"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".SecureActivity"
+            android:name=".activity.SecureActivity"
             android:label="@string/secure_screen"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".ScanActivity"
+            android:name=".activity.ScanActivity"
             android:label="@string/scan_screen"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".HistoryActivity"
+            android:name=".activity.HistoryActivity"
             android:label="@string/history_screen"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".SettingsActivity"
+            android:name=".activity.SettingsActivity"
             android:label="@string/settings_screen"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>

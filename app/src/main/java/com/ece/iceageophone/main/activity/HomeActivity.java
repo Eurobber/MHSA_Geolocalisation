@@ -1,10 +1,13 @@
-package com.ece.iceageophone.main;
+package com.ece.iceageophone.main.activity;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.telephony.SmsManager;
+import android.util.Log;
+import android.view.View;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -12,10 +15,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
-public class SecureActivity extends AppCompatActivity
+import com.ece.iceageophone.main.R;
+
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private static final String TAG = "MainActivity";
+
+    private EditText phoneNumberEditText;
+    private EditText smsBodyEditText;
+
+    private Button sendSmsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +49,8 @@ public class SecureActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.SEND_SMS, Manifest.permission.RECEIVE_SMS}, 1);
     }
 
     @Override
@@ -66,9 +85,8 @@ public class SecureActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-
     /*
-         Implémentation des liens de la barre de navigation
+    Implémentation des liens de la barre de navigation
     */
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -106,5 +124,81 @@ public class SecureActivity extends AppCompatActivity
         }
 
         return false;
+    }
+
+    /**
+     *
+     */
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // On demande à l'utilisateur la permission d'envoyer des SMS
+        Log.d(TAG, "Start application");
+
+        phoneNumberEditText = (EditText) findViewById(R.id.phone_number_edit_text);
+        smsBodyEditText = (EditText) findViewById(R.id.sms_body_edit_text);
+
+        sendSmsButton = (Button) findViewById(R.id.send_sms_button);
+        sendSmsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendSmsMessage(phoneNumberEditText.getText().toString(), smsBodyEditText.getText().toString());
+            }
+        });
+    }
+
+    /**
+     * Sends a text message to a phone number
+     * @param phoneNumber
+     * @param text
+     */
+    protected void sendSmsMessage(String phoneNumber, String text) {
+        Log.d(TAG, "Sending text message \"" + text + "\" to " + phoneNumber);
+
+        SmsManager smsManager = SmsManager.getDefault();
+
+        smsManager.sendTextMessage(phoneNumber, null, createSmsBody(text, "Password"), null, null);
+    }
+
+    protected String createSmsBody(String request, String password)
+    {
+        final String opener = "Ice-aGeoPhone usingPWD:";
+        final String separator = " // ";
+        String finalMessage = null;
+
+        try {
+            finalMessage = opener+sha1smsMessage(password)+separator+request;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        return finalMessage;
+    }
+
+    /**
+     *
+     * @param str
+     * @return
+     * @throws NoSuchAlgorithmException
+     * @throws UnsupportedEncodingException
+     */
+    protected String sha1smsMessage(String str)
+            throws NoSuchAlgorithmException, UnsupportedEncodingException
+    {
+        MessageDigest md = MessageDigest.getInstance("SHA1");
+        md.reset();
+        byte[] buffer = str.getBytes("UTF-8");
+        md.update(buffer);
+        byte[] digest = md.digest();
+
+        String hexCode = "";
+
+        for (int i = 0; i < digest.length; i++) {
+            hexCode +=  Integer.toString( ( digest[i] & 0xff ) + 0x100, 16).substring(1);
+        }
+
+        return hexCode;
     }
 }
