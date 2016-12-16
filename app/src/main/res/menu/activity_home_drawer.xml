@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/home"
+            android:icon="@drawable/ic_home"
+            android:title="@string/home_screen" />
+        <item
+            android:id="@+id/contact"
+            android:icon="@drawable/ic_phone"
+            android:title="@string/contact_screen" />
+        <item
+            android:id="@+id/locate"
+            android:icon="@drawable/ic_locate"
+            android:title="@string/locate_screen" />
+        <item
+            android:id="@+id/secure"
+            android:icon="@drawable/ic_secure"
+            android:title="@string/secure_screen" />
+        <item
+            android:id="@+id/scan"
+            android:icon="@drawable/ic_scan"
+            android:title="@string/scan_screen"/>
+    </group>
+    <item android:title="More options">
+        <menu>
+            <item
+                android:id="@+id/history"
+                android:icon="@drawable/ic_history"
+                android:title="@string/history_screen" />
+            <item
+                android:id="@+id/settings"
+                android:icon="@drawable/ic_settings"
+                android:title="@string/settings_screen" />
+        </menu>
+    </item>
+</menu>
