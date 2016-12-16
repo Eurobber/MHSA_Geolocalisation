@@ -20,6 +20,12 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+import static android.R.id.input;
+
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -152,6 +158,49 @@ public class HomeActivity extends AppCompatActivity
         Log.d(TAG, "Sending text message \"" + text + "\" to " + phoneNumber);
 
         SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage(phoneNumber, null, text, null, null);
+
+        smsManager.sendTextMessage(phoneNumber, null, createSmsBody("Je teste l'appli chiffrée", "Test"), null, null);
+    }
+
+    protected String createSmsBody(String request, String password)
+    {
+        final String opener = "Ice-aGeoPhone usingPWD:";
+        final String separator = " // ";
+        String finalMessage = null;
+
+        try {
+            finalMessage = opener+sha1smsMessage(password)+separator+request;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        return finalMessage;
+    }
+
+    /**
+     *
+     * @param str
+     * @return
+     * @throws NoSuchAlgorithmException
+     * @throws UnsupportedEncodingException
+     */
+    protected String sha1smsMessage(String str)
+            throws NoSuchAlgorithmException, UnsupportedEncodingException
+    {
+        MessageDigest md = MessageDigest.getInstance("SHA1");
+        md.reset();
+        byte[] buffer = str.getBytes("UTF-8");
+        md.update(buffer);
+        byte[] digest = md.digest();
+
+        String hexCode = "";
+
+        for (int i = 0; i < digest.length; i++) {
+            hexCode +=  Integer.toString( ( digest[i] & 0xff ) + 0x100, 16).substring(1);
+        }
+
+        return hexCode;
     }
 }
