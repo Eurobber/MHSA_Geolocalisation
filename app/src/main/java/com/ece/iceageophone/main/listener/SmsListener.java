@@ -1,36 +1,49 @@
 package com.ece.iceageophone.main.listener;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
 import com.ece.iceageophone.main.BuildConfig;
+import com.ece.iceageophone.main.activity.alertdialog.DisabledGPSAlertDialogActivity;
 import com.ece.iceageophone.main.exception.MessageFormatException;
 import com.ece.iceageophone.main.util.Command;
 import com.ece.iceageophone.main.util.CommandSender;
-import com.ece.iceageophone.main.util.PositionLocater;
 import com.ece.iceageophone.main.util.SmsSender;
 
 import static android.content.Context.LOCATION_SERVICE;
 
-public class SmsListener extends BroadcastReceiver {
+public class SmsListener extends BroadcastReceiver implements LocationListener {
 
     private static final String TAG = "SmsListener";
 
+    private static final long MIN_TIME = 1000;
+    private static final float MIN_DISTANCE = 1;
+    private static final float MAX_ACCURACY = 150;
+
     final SmsManager sms = SmsManager.getDefault();
+
+    private Context context = null;
+    private LocationManager locationManager = null;
 
     private String senderNum = null;
 
     @TargetApi(BuildConfig.MIN_SDK_VERSION)
     public void onReceive(Context context, Intent intent) {
+        this.context = context;
+
         // Used to share data between activities
         final Bundle bundle = intent.getExtras();
 
@@ -115,18 +128,29 @@ public class SmsListener extends BroadcastReceiver {
     }
 
     private void requestLocation(Context context, String senderNum) {
-        try {
-            LocationManager locationManager = (LocationManager) context.getApplicationContext().getSystemService(LOCATION_SERVICE);
-            Location location = PositionLocater.requestGPSLocation(context, locationManager);
-            if (location != null) {
-                sendLocation(location, senderNum);
-            } else {
-                // Else no location found, retry
-                Log.d(TAG, "No GPS location found");
-            }
-        } catch (SecurityException | IllegalArgumentException e) {
-            Log.e(TAG, "Error while getting GPS position", e);
+        this.senderNum = senderNum;
+        locationManager = (LocationManager) context.getApplicationContext().getSystemService(LOCATION_SERVICE);
+        // Is GPS is not enabled, request user to change settings
+        final boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        if (!gpsEnabled) {
+            showSettingsNetWorkAlert(context);
         }
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, "No permission to access location");
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
+    }
+
+    /**
+     * Prompt the user to enable GPS on settings
+     * @param context
+     */
+    public static void showSettingsNetWorkAlert(Context context) {
+        Intent intent = new Intent(context, DisabledGPSAlertDialogActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 
     private void sendLocation(Location location, String senderNum) {
@@ -154,10 +178,10 @@ public class SmsListener extends BroadcastReceiver {
     private String formatLocationMessage(Location location) {
         StringBuilder formattedLocation = new StringBuilder("");
         formattedLocation.append(location.getLatitude())
-                            .append(COORDINATES_SEPARATOR)
-                            .append(location.getLongitude())
-                            .append(COORDINATES_SEPARATOR)
-                            .append(location.getAltitude());
+                .append(COORDINATES_SEPARATOR)
+                .append(location.getLongitude())
+                .append(COORDINATES_SEPARATOR)
+                .append(location.getAltitude());
 
         return formattedLocation.toString();
     }
@@ -178,8 +202,7 @@ public class SmsListener extends BroadcastReceiver {
             } catch (NumberFormatException e) {
                 Log.d(TAG, "Location coordinates should be doubles", e);
             }
-        }
-        else {
+        } else {
             Log.d(TAG, "Message formatted incorrectly");
         }
         throw new MessageFormatException("Location formatted incorrectly");
@@ -189,4 +212,47 @@ public class SmsListener extends BroadcastReceiver {
 
     }
 
+    @Override
+    public void onLocationChanged(Location location) {
+        // Process changed location only if accuracy < 50m
+        if (location.hasAccuracy()) {
+            Log.d(TAG, "Location accuracy " + location.getAccuracy());
+            if (location.getAccuracy() < MAX_ACCURACY) {
+                if (location != null && locationManager != null && context != null && senderNum != null) {
+                    // Send location via SMS
+                    sendLocation(location, senderNum);
+
+                    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                            && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        Log.d(TAG, "No permission to access location");
+                        return;
+                    }
+
+                    // Stop listening to location updates
+                    this.locationManager.removeUpdates(this);
+                    this.locationManager = null;
+                    this.senderNum = null;
+                    this.context = null;
+                } else {
+                    // Else no location found, retry
+                    Log.d(TAG, "No GPS location found");
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
 }
