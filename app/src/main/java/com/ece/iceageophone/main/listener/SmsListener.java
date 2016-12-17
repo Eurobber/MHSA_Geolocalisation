@@ -17,9 +17,11 @@ import android.telephony.SmsMessage;
 import android.util.Log;
 
 import com.ece.iceageophone.main.BuildConfig;
+import com.ece.iceageophone.main.activity.LocateActivity;
 import com.ece.iceageophone.main.activity.alertdialog.DisabledGPSAlertDialogActivity;
 import com.ece.iceageophone.main.exception.MessageFormatException;
 import com.ece.iceageophone.main.util.Command;
+import com.ece.iceageophone.main.util.CommandFormatter;
 import com.ece.iceageophone.main.util.CommandSender;
 import com.ece.iceageophone.main.util.SmsSender;
 
@@ -39,11 +41,10 @@ public class SmsListener extends BroadcastReceiver implements LocationListener {
     private LocationManager locationManager = null;
 
     private String senderNum = null;
+    private String sentPassword = null;
 
     @TargetApi(BuildConfig.MIN_SDK_VERSION)
     public void onReceive(Context context, Intent intent) {
-        this.context = context;
-
         // Used to share data between activities
         final Bundle bundle = intent.getExtras();
 
@@ -81,10 +82,10 @@ public class SmsListener extends BroadcastReceiver implements LocationListener {
     private void parseMessage(Context context, String senderNum, String message) {
         if (message != null || message.isEmpty()) {
             // Splitting the message
-            String[] splitMessage = message.split(CommandSender.SEPARATOR);
+            String[] splitMessage = message.split(CommandFormatter.SEPARATOR);
             // Checking message format
             if (splitMessage.length >= 3) {
-                if (splitMessage[0].equals(CommandSender.APPLICATION_NAME)) {
+                if (splitMessage[0].equals(CommandFormatter.APPLICATION_NAME)) {
 //                  TODO vérification du mot de passe if (splitMessage[1].equals(hash de notre mot de passe))
 
                     handleCommand(context, senderNum, splitMessage);
@@ -117,18 +118,20 @@ public class SmsListener extends BroadcastReceiver implements LocationListener {
     private void handleGetLocation(Context context, String senderNum, String[] splitMessage) {
         // Request the location
         if (splitMessage.length == 3) {
-            requestLocation(context, senderNum);
+            requestLocation(context, senderNum, splitMessage[1]);
         }
         // Process the response
         else if (splitMessage.length == 4) {
-            processLocation(splitMessage[3]);
+            processLocation(context, splitMessage[3]);
         } else {
             Log.d(TAG, "Message formatted incorrectly");
         }
     }
 
-    private void requestLocation(Context context, String senderNum) {
+    private void requestLocation(Context context, String senderNum, String sentPassword) {
+        this.context = context;
         this.senderNum = senderNum;
+        this.sentPassword = sentPassword;
         locationManager = (LocationManager) context.getApplicationContext().getSystemService(LOCATION_SERVICE);
         // Is GPS is not enabled, request user to change settings
         final boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -153,59 +156,20 @@ public class SmsListener extends BroadcastReceiver implements LocationListener {
         context.startActivity(intent);
     }
 
-    private void sendLocation(Location location, String senderNum) {
-        String body = formatLocationMessage(location);
-        SmsSender.sendSms(senderNum, body);
-    }
-
-    private void processLocation(String locationMessage) {
+    private void processLocation(Context context, String locationMessage) {
         try {
-            Location location = parseLocationMessage(locationMessage);
+            Location location = CommandFormatter.parseLocationMessage(locationMessage);
+
             Log.d(TAG, "Show location on map");
-            // TODO Show location on map of Locate screen
+
+            // Show location on locate screen's map
+            Intent intent = new Intent(context, LocateActivity.class);
+            intent.putExtra(LocateActivity.LOCATION, location);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
         } catch (MessageFormatException e) {
             Log.d(TAG, "Can not process location", e);
         }
-    }
-
-    private static final String COORDINATES_SEPARATOR = ";";
-
-    /**
-     * Format Location to String
-     * @param location
-     * @return
-     */
-    private String formatLocationMessage(Location location) {
-        StringBuilder formattedLocation = new StringBuilder("");
-        formattedLocation.append(location.getLatitude())
-                .append(COORDINATES_SEPARATOR)
-                .append(location.getLongitude())
-                .append(COORDINATES_SEPARATOR)
-                .append(location.getAltitude());
-
-        return formattedLocation.toString();
-    }
-
-    /**
-     * Parse String to Location
-     * @return
-     */
-    private Location parseLocationMessage(String message) throws MessageFormatException {
-        String[] splittedMessage = message.split(COORDINATES_SEPARATOR);
-        if (splittedMessage.length == 3) {
-            Location location = new Location("");
-            try {
-                location.setLatitude(Double.parseDouble(splittedMessage[0]));
-                location.setLongitude(Double.parseDouble(splittedMessage[1]));
-                location.setAltitude(Double.parseDouble(splittedMessage[2]));
-                return location;
-            } catch (NumberFormatException e) {
-                Log.d(TAG, "Location coordinates should be doubles", e);
-            }
-        } else {
-            Log.d(TAG, "Message formatted incorrectly");
-        }
-        throw new MessageFormatException("Location formatted incorrectly");
     }
 
     private void vibrate() {
@@ -218,9 +182,9 @@ public class SmsListener extends BroadcastReceiver implements LocationListener {
         if (location.hasAccuracy()) {
             Log.d(TAG, "Location accuracy " + location.getAccuracy());
             if (location.getAccuracy() < MAX_ACCURACY) {
-                if (location != null && locationManager != null && context != null && senderNum != null) {
+                if (location != null && locationManager != null && context != null && senderNum != null && sentPassword != null) {
                     // Send location via SMS
-                    sendLocation(location, senderNum);
+                    CommandSender.sendCommand(Command.GET_LOCATION, senderNum, sentPassword, location);
 
                     if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                             && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
