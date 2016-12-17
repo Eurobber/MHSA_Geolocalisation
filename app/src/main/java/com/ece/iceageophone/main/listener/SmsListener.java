@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,6 +27,7 @@ public class SmsListener extends BroadcastReceiver {
 
     final SmsManager sms = SmsManager.getDefault();
 
+    private String senderNum = null;
 
     @TargetApi(BuildConfig.MIN_SDK_VERSION)
     public void onReceive(Context context, Intent intent) {
@@ -102,9 +102,9 @@ public class SmsListener extends BroadcastReceiver {
     }
 
     private void handleGetLocation(Context context, String senderNum, String[] splitMessage) {
-        // Respond to request
+        // Request the location
         if (splitMessage.length == 3) {
-            sendLocation(context, senderNum);
+            requestLocation(context, senderNum);
         }
         // Process the response
         else if (splitMessage.length == 4) {
@@ -114,9 +114,22 @@ public class SmsListener extends BroadcastReceiver {
         }
     }
 
-    private void sendLocation(Context context, String senderNum) {
-        LocationManager locationManager = (LocationManager) context.getApplicationContext().getSystemService(LOCATION_SERVICE);
-        Location location = PositionLocater.getGPSLocation(locationManager);
+    private void requestLocation(Context context, String senderNum) {
+        try {
+            LocationManager locationManager = (LocationManager) context.getApplicationContext().getSystemService(LOCATION_SERVICE);
+            Location location = PositionLocater.requestGPSLocation(context, locationManager);
+            if (location != null) {
+                sendLocation(location, senderNum);
+            } else {
+                // Else no location found, retry
+                Log.d(TAG, "No GPS location found");
+            }
+        } catch (SecurityException | IllegalArgumentException e) {
+            Log.e(TAG, "Error while getting GPS position", e);
+        }
+    }
+
+    private void sendLocation(Location location, String senderNum) {
         String body = formatLocationMessage(location);
         SmsSender.sendSms(senderNum, body);
     }

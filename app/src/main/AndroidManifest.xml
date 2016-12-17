@@ -47,6 +47,11 @@
             android:label="@string/settings_screen"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+        <activity
+            android:name=".activity.alertdialog.DisabledGPSAlertDialogActivity"
+            android:label="Alert"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
 
         <receiver android:name=".listener.SmsListener">
             <intent-filter>
