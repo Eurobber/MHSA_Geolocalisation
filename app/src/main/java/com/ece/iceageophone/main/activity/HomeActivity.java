@@ -19,12 +19,16 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.ece.iceageophone.main.R;
+import com.ece.iceageophone.main.data.LogRecord;
 import com.ece.iceageophone.main.util.Command;
 import com.ece.iceageophone.main.util.CommandSender;
+import com.ece.iceageophone.main.util.SmsSender;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import static com.ece.iceageophone.main.R.id.phone_number_edit_text;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -121,14 +125,16 @@ public class HomeActivity extends AppCompatActivity
         super.onStart();
         Log.d(TAG, "Start application");
 
-        phoneNumberEditText = (EditText) findViewById(R.id.phone_number_edit_text);
+        phoneNumberEditText = (EditText) findViewById(phone_number_edit_text);
         smsBodyEditText = (EditText) findViewById(R.id.sms_body_edit_text);
 
         sendSmsButton = (Button) findViewById(R.id.send_sms_button);
         sendSmsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CommandSender.sendCommand(Command.GET_LOCATION, phoneNumberEditText.getText().toString(), smsBodyEditText.getText().toString());
+                SmsSender.sendSms(phoneNumberEditText.getText().toString(), smsBodyEditText.getText().toString());
+                LogRecord lr = new LogRecord("Sent message \""+smsBodyEditText.getText().toString()+"\" to "+phoneNumberEditText.getText().toString());
+                lr.appendRecord(getApplicationContext());
             }
         });
     }
