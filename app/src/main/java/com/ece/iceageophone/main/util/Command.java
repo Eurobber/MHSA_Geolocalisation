@@ -15,4 +15,13 @@ public enum Command {
         return commandName;
     }
 
+    public static Command getCommand(String name) throws IllegalArgumentException {
+        for (Command command : Command.values()) {
+            if (name.equals(command.getCommandName())) {
+                return command;
+            }
+        }
+        throw new IllegalArgumentException();
+    }
+
 }

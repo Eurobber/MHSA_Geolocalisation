@@ -1,6 +1,5 @@
 package com.ece.iceageophone.main.util;
 
-import android.telephony.SmsManager;
 import android.util.Log;
 
 import java.io.UnsupportedEncodingException;
@@ -11,33 +10,21 @@ public class CommandSender {
 
     private static final String TAG = "CommandSender";
 
-    private static final String opener = "Ice-aGeoPhone usingPWD:";
-    private static final String separator = " // ";
-
-    public static void sendCommand(Command command, String targetPhone, String targetPassword) {
-        try {
-            String body = createSmsBody(command, targetPassword);
-            sendSms(targetPhone, body);
-        } catch (UnsupportedEncodingException | NoSuchAlgorithmException | IllegalArgumentException e) {
-            Log.e(TAG, "Can not send command " + command + " to " + targetPhone, e);
-        }
-    }
+    public static final String APPLICATION_NAME = "Ice-aGeoPhone";
+    public static final String SEPARATOR = " // ";
 
     /**
-     * Sends a text message to a phone number
-     * @param phoneNumber
-     * @param body
+     * Send a command
+     * @param command
+     * @param targetPhone
+     * @param targetPassword
      */
-    private static void sendSms(String phoneNumber, String body) throws IllegalArgumentException {
-        SmsManager smsManager = SmsManager.getDefault();
-
+    public static void sendCommand(Command command, String targetPhone, String targetPassword) {
         try {
-            smsManager.sendTextMessage(phoneNumber, null, body, null, null);
-            Log.d(TAG, "Sent text message \"" + body + "\" to " + phoneNumber);
-        } catch (IllegalArgumentException e) {
-            Log.e(TAG, "Can not send SMS " +  body + " to " + phoneNumber, e);
-            throw e;
-
+            String body = formatMessageBody(command, targetPassword);
+            SmsSender.sendSms(targetPhone, body);
+        } catch (UnsupportedEncodingException | NoSuchAlgorithmException | IllegalArgumentException e) {
+            Log.e(TAG, "Can not send command " + command + " to " + targetPhone, e);
         }
     }
 
@@ -47,13 +34,14 @@ public class CommandSender {
      * @param password
      * @return
      */
-    private static String createSmsBody(Command command, String password) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    private static String formatMessageBody(Command command, String password) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         StringBuilder finalMessage = new StringBuilder("");
 
         try {
-            finalMessage.append(opener)
+            finalMessage.append(APPLICATION_NAME)
+                        .append(SEPARATOR)
                         .append(sha1smsMessage(password))
-                        .append(separator)
+                        .append(SEPARATOR)
                         .append(command.getCommandName());
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
             Log.e(TAG, "Can not encode target password properly", e);
