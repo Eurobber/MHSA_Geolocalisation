@@ -9,14 +9,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.ece.iceageophone.main.R;
 
-import static com.ece.iceageophone.main.activity.SettingsActivity.SET;
-import static com.ece.iceageophone.main.activity.SettingsActivity.SETPASS;
+import static com.ece.iceageophone.main.util.PasswordChecker.*;
 
 public class ScanActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {

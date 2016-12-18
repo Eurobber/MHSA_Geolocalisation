@@ -9,14 +9,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.ece.iceageophone.main.R;
+import com.ece.iceageophone.main.util.PasswordChecker;
 
-import static com.ece.iceageophone.main.activity.SettingsActivity.SET;
-import static com.ece.iceageophone.main.activity.SettingsActivity.SETPASS;
+import static com.ece.iceageophone.main.util.PasswordChecker.*;
+
 
 public class SecureActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -39,10 +39,8 @@ public class SecureActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        // Force password definition
-        sharedPreferences = getBaseContext().getSharedPreferences(SET, MODE_PRIVATE);
 
-        if (!sharedPreferences.contains(SETPASS)) {
+        if (!PasswordChecker.getPreferences(this).contains(SETPASS)) {
             // Display a small text message to prompt the user for a new password
             Toast.makeText(this, "You must enter a new password", Toast.LENGTH_SHORT).show();
 

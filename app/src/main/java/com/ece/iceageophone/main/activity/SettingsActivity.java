@@ -23,6 +23,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.ece.iceageophone.main.R;
+import com.ece.iceageophone.main.util.PasswordChecker;
 import com.ece.iceageophone.main.util.SmsSender;
 
 import static android.R.attr.name;
@@ -34,15 +35,14 @@ import static com.ece.iceageophone.main.R.id.ETPhone;
 import static com.ece.iceageophone.main.R.id.ETPhonePwd;
 import static com.ece.iceageophone.main.R.id.phone_number_edit_text;
 import static com.ece.iceageophone.main.R.id.saveSettingsBtn;
+import static com.ece.iceageophone.main.util.PasswordChecker.SET;
+import static com.ece.iceageophone.main.util.PasswordChecker.SETPASS;
+import static com.ece.iceageophone.main.util.PasswordChecker.SETTGT;
+import static com.ece.iceageophone.main.util.PasswordChecker.SETTGTPASS;
 
 public class SettingsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    public static final String SET = "SETTINGS";
-    public static final String SETPASS = "PWD_SETTINGS";
-    public static final String SETTGT = "TARGET_NUMBER";
-    public static final String SETTGTPASS = "TARGET_PASSWORD";
-    public static final String SETMODE = "MODE_SETTINGS";
     private static final String TAG = "Settings Activity";
     private SharedPreferences sharedPreferences;
 
@@ -80,9 +80,8 @@ public class SettingsActivity extends AppCompatActivity
         s.setAdapter(adapter);
 
         // Ask for a new password if no previous password
-        sharedPreferences = getBaseContext().getSharedPreferences(SET, MODE_PRIVATE);
 
-        if (!sharedPreferences.contains(SETPASS)) {
+        if (!PasswordChecker.getPreferences(this).contains(SETPASS)) {
             // Display a small text message to prompt the user for a new password
             Toast.makeText(this, "You must enter a new password", Toast.LENGTH_SHORT).show();
         }
@@ -167,6 +166,8 @@ public class SettingsActivity extends AppCompatActivity
                         Log.d(TAG, "Successfully stored new remote number and new remote password !");
                     }
                 }
+                else if(!isNumber())Toast.makeText(SettingsActivity.this, "Phone number has to be a ... number !", Toast.LENGTH_SHORT).show();
+
                 // If password has never been set or is not in Shared Preferences file
                 if (!sharedPreferences.contains(SETPASS)) {
                     if(!isEmpty(newPwd.getText().toString())){
@@ -182,15 +183,17 @@ public class SettingsActivity extends AppCompatActivity
                 }
                 // If password is changed, we have to check local password to confirm
                 else if(!isEmpty(newPwd.getText().toString()) && !isEmpty(localPwd.getText().toString())){
-                    if(sharedPreferences.getString(SETPASS, null)==localPwd.getText().toString()){
+                    if(sharedPreferences.getString(SETPASS, null).equals(localPwd.getText().toString())){
                         sharedPreferences
                                 .edit()
                                 .putString(SETPASS, newPwd.getText().toString())
                                 .apply();
+                        Toast.makeText(SettingsActivity.this, "Password changed to "+sharedPreferences.getString(SETPASS, null), Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "Password changed to "+sharedPreferences.getString(SETPASS, null));
                     }
                     else{
                         Toast.makeText(SettingsActivity.this, "Wrong guess mate ! Luckier next time ;)", Toast.LENGTH_SHORT).show();
-                        Log.e(TAG, "Wrong password !");
+                        Log.e(TAG, "Wrong password ! "+sharedPreferences.getString(SETPASS, null)+localPwd.getText().toString());
                     }
                 }
             }
@@ -201,12 +204,5 @@ public class SettingsActivity extends AppCompatActivity
         if (!isEmpty(number.getText().toString()) && number.getText().toString().matches("\\d+"))
             return true;
         return false;
-    }
-
-    private void reload(){
-        Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
-        startActivity(intent);
-        overridePendingTransition(0, 0);
-        finish();
     }
 }
