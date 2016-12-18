@@ -57,7 +57,8 @@ public class HomeActivity extends AppCompatActivity
                     Manifest.permission.SEND_SMS,
                     Manifest.permission.RECEIVE_SMS,
                     Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.VIBRATE},
+                    Manifest.permission.VIBRATE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE},
                 1);
 
         // If password has never been set or is not in Shared Preferences file
