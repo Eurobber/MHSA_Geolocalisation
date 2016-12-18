@@ -261,6 +261,10 @@ public class SmsListener extends BroadcastReceiver implements LocationListener {
         }
     }
 
+    /**
+     *
+     * @param location
+     */
     @Override
     public void onLocationChanged(Location location) {
         // Process changed location only if accuracy < 50m
