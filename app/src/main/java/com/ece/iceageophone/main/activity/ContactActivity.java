@@ -80,7 +80,7 @@ public class ContactActivity extends AppCompatActivity
             public void onClick(View v) {
                 // Send instructions command
                 getRemote();
-                Toast.makeText(ContactActivity.this, "Instructions sent to"+remoteNumber, Toast.LENGTH_SHORT).show();
+                Toast.makeText(ContactActivity.this, "Instructions sent to "+remoteNumber, Toast.LENGTH_SHORT).show();
                 LogRecord.addRecord(getApplicationContext(), 4, null, remoteNumber);
                 /*CommandSender.sendCommand("Follow these instructions !", remoteNumber, remotePassword);*/
 

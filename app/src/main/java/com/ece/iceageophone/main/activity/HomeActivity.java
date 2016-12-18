@@ -126,18 +126,9 @@ public class HomeActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d(TAG, "Start application");
+        Log.d(TAG, "Starting application");
 
-        phoneNumberEditText = (EditText) findViewById(R.id.phone_number_edit_text);
-        smsBodyEditText = (EditText) findViewById(R.id.sms_body_edit_text);
 
-        sendSmsButton = (Button) findViewById(R.id.send_sms_button);
-        sendSmsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CommandSender.sendCommand(Command.GET_GPS_LOCATION, phoneNumberEditText.getText().toString(), smsBodyEditText.getText().toString());
-            }
-        });
     }
 
 }

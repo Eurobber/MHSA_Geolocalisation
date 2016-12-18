@@ -88,7 +88,7 @@ public class LocateActivity extends AppCompatActivity
                     // Send GPS location request
                     getRemote();
                     CommandSender.sendCommand(Command.GET_GPS_LOCATION, remoteNumber, remotePassword);
-                    Toast.makeText(LocateActivity.this, "Locate request sent to"+remoteNumber, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LocateActivity.this, "Locate request sent to "+remoteNumber, Toast.LENGTH_SHORT).show();
                     LogRecord.addRecord(getApplicationContext(), 5, null, remoteNumber);
                 }
             });
@@ -98,7 +98,7 @@ public class LocateActivity extends AppCompatActivity
                 public void onClick(View v) {
                     // Send geomagnetic location request
                     CommandSender.sendCommand(Command.GET_GEOMAGNETIC_LOCATION, remoteNumber, remotePassword);
-                    Toast.makeText(LocateActivity.this, "Geolocate request sent to"+remoteNumber, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LocateActivity.this, "Geolocate request sent to "+remoteNumber, Toast.LENGTH_SHORT).show();
                     LogRecord.addRecord(getApplicationContext(), 6, null, remoteNumber);
                 }
             });
