@@ -3,7 +3,8 @@ package com.ece.iceageophone.main.util;
 public enum Command {
 
     GET_LOCATION("location"),
-    VIBRATE("vibrate");
+    VIBRATE("vibrate"),
+    RING("ring");
 
     private String commandName;
 

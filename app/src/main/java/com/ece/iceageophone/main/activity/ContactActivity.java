@@ -46,6 +46,7 @@ public class ContactActivity extends AppCompatActivity
         vibrateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Send vibrate command
                 // TODO getSharedPreferences() to get target phone number and password
                 CommandSender.sendCommand(Command.VIBRATE, "0606698350", "password");
             }
@@ -55,6 +56,8 @@ public class ContactActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 // Send ring command
+                // TODO getSharedPreferences() to get target phone number and password
+                CommandSender.sendCommand(Command.RING, "0606698350", "password");
             }
         });
 
