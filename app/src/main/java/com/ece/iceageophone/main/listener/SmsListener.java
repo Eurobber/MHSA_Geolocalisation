@@ -6,19 +6,21 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
-import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
@@ -34,21 +36,26 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static android.content.Context.LOCATION_SERVICE;
+import static android.content.Context.SENSOR_SERVICE;
 import static android.content.Context.VIBRATOR_SERVICE;
 
-public class SmsListener extends BroadcastReceiver implements LocationListener {
+public class SmsListener extends BroadcastReceiver implements LocationListener, SensorEventListener {
 
     private static final String TAG = "SmsListener";
 
     private static final long LOCATION_MIN_TIME = 1000;
     private static final float LOCATION_MIN_DISTANCE = 1;
     private static final float LOCATION_MAX_ACCURACY = 150;
+
     private static final long RING_DURATION = 10000;
 
-    final SmsManager sms = SmsManager.getDefault();
+    private final float alpha = (float) 0.8;
+    private float gravity[] = new float[3];
+    private float magnetic[] = new float[3];
 
     private Context context = null;
     private LocationManager locationManager = null;
+    private SensorManager sensorManager = null;
 
     private String senderNum = null;
     private String sentPassword = null;
@@ -107,8 +114,11 @@ public class SmsListener extends BroadcastReceiver implements LocationListener {
     private void handleCommand(Context context, String senderNum, String[] splitMessage) {
         try {
             switch (Command.getCommand(splitMessage[2])) {
-                case GET_LOCATION:
-                    handleGetLocation(context, senderNum, splitMessage);
+                case GET_GPS_LOCATION:
+                    handleGetGpsLocation(context, senderNum, splitMessage);
+                    break;
+                case GET_GEOMAGNETIC_LOCATION:
+                    handleGetGeomagneticLocation(context, senderNum, splitMessage);
                     break;
                 case VIBRATE:
                     vibrate(context);
@@ -127,15 +137,34 @@ public class SmsListener extends BroadcastReceiver implements LocationListener {
     }
 
     /**
-     * Handle received location command : either A request location from B, or B receives location from A
+     * Handle received GPS location command : either A request location from B, or B receives location from A
      * @param context
      * @param senderNum
      * @param splitMessage
      */
-    private void handleGetLocation(Context context, String senderNum, String[] splitMessage) {
+    private void handleGetGpsLocation(Context context, String senderNum, String[] splitMessage) {
         // Request the location
         if (splitMessage.length == 3) {
             requestLocation(context, senderNum, splitMessage[1]);
+        }
+        // Process the response
+        else if (splitMessage.length == 4) {
+            processLocation(context, splitMessage[3]);
+        } else {
+            Log.d(TAG, "Message formatted incorrectly");
+        }
+    }
+
+    /**
+     * Handle received geomagnetic location command : either A request location from B, or B receives location from A
+     * @param context
+     * @param senderNum
+     * @param splitMessage
+     */
+    private void handleGetGeomagneticLocation(Context context, String senderNum, String[] splitMessage) {
+        // Request the location
+        if (splitMessage.length == 3) {
+            requestGeomagneticLocation(context, senderNum, splitMessage[1]);
         }
         // Process the response
         else if (splitMessage.length == 4) {
@@ -167,6 +196,16 @@ public class SmsListener extends BroadcastReceiver implements LocationListener {
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_MIN_TIME, LOCATION_MIN_DISTANCE, this);
+    }
+
+    private void requestGeomagneticLocation(Context context, String senderNum, String sentPassword) {
+        sensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
+
+        Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        Sensor geomagnetic = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_STATUS_ACCURACY_HIGH);
+        sensorManager.registerListener(this, geomagnetic, SensorManager.SENSOR_STATUS_ACCURACY_HIGH);
     }
 
     /**
@@ -273,7 +312,7 @@ public class SmsListener extends BroadcastReceiver implements LocationListener {
             if (location.getAccuracy() < LOCATION_MAX_ACCURACY) {
                 if (location != null && locationManager != null && context != null && senderNum != null && sentPassword != null) {
                     // Send location via SMS
-                    CommandSender.sendCommand(Command.GET_LOCATION, senderNum, sentPassword, location);
+                    CommandSender.sendCommand(Command.GET_GPS_LOCATION, senderNum, sentPassword, location);
 
                     if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                             && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -306,6 +345,47 @@ public class SmsListener extends BroadcastReceiver implements LocationListener {
 
     @Override
     public void onProviderDisabled(String provider) {
+
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE) {
+            Log.d(TAG, "Unreliable sensor status : " + event.values[0] + ";" + event.values[1] + ";" + event.values[2]);
+            return;
+        }
+        Sensor sensor = event.sensor;
+        if (sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            // Isolate the force of gravity with the low-pass filter
+//            gravity[0] = alpha * gravity[0] + (1 - alpha) * event.values[0];
+//            gravity[1] = alpha * gravity[1] + (1 - alpha) * event.values[1];
+//            gravity[2] = alpha * gravity[2] + (1 - alpha) * event.values[2];
+            gravity[0] = event.values[0];
+            gravity[1] = event.values[1];
+            gravity[2] = event.values[2];
+        } else if (sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+            magnetic[0] = event.values[0];
+            magnetic[1] = event.values[1];
+            magnetic[2] = event.values[2];
+
+            float[] R = new float[9];
+            float[] I = new float[9];
+            SensorManager.getRotationMatrix(R, I, gravity, magnetic);
+            float [] A_D = event.values.clone();
+            float [] A_W = new float[3];
+            A_W[0] = R[0] * A_D[0] + R[1] * A_D[1] + R[2] * A_D[2];
+            A_W[1] = R[3] * A_D[0] + R[4] * A_D[1] + R[5] * A_D[2];
+            A_W[2] = R[6] * A_D[0] + R[7] * A_D[1] + R[8] * A_D[2];
+
+            Log.d(TAG, "Gravity: " + gravity[0] + " " + gravity[1] + " " + gravity[2]);
+            Log.d(TAG, "Magnetic: " + magnetic[0] + " " + magnetic[1] + " " + magnetic[2]);
+            Log.d("Field","\nX :"+A_W[0]+"\nY :"+A_W[1]+"\nZ :"+A_W[2]);
+
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
 }

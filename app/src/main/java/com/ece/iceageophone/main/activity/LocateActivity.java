@@ -34,7 +34,8 @@ public class LocateActivity extends AppCompatActivity
 
     public static final String LOCATION = "location";
 
-    private Button requestLocationButton = null;
+    private Button requestLocationGpsButton = null;
+    private Button requestLocationGeomagneticButton = null;
     private GoogleMap googleMap;
     private Location targetLocation = null;
 
@@ -71,24 +72,36 @@ public class LocateActivity extends AppCompatActivity
         }
 
         // Get request button
-        this.requestLocationButton = (Button) findViewById(R.id.request_location_button);
+        this.requestLocationGpsButton = (Button) findViewById(R.id.request_location_gps_button);
+        this.requestLocationGeomagneticButton = (Button) findViewById(R.id.request_location_geomagnetic_button);
 
         // If there is no location, a request can be sent
         if (targetLocation == null) {
             // Show request button and set listener
-            this.requestLocationButton.setVisibility(View.VISIBLE);
-            requestLocationButton.setOnClickListener(new View.OnClickListener() {
+            this.requestLocationGpsButton.setVisibility(View.VISIBLE);
+            this.requestLocationGeomagneticButton.setVisibility(View.VISIBLE);
+
+            requestLocationGpsButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    // Send GPS location request
                     getRemote();
-                    CommandSender.sendCommand(Command.GET_LOCATION, remoteNumber, remotePassword);
+                    CommandSender.sendCommand(Command.GET_GPS_LOCATION, remoteNumber, remotePassword);
+                }
+            });
+
+            requestLocationGeomagneticButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Send geomagnetic location request
+                    CommandSender.sendCommand(Command.GET_GEOMAGNETIC_LOCATION,"0606698350", "password");
                 }
             });
         }
         // Else location is available, the request has already been made
         else {
             // Hide request button
-            this.requestLocationButton.setVisibility(View.GONE);
+            this.requestLocationGpsButton.setVisibility(View.GONE);
 
             // Obtain the SupportMapFragment and get notified when the map is ready to be used
             SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()

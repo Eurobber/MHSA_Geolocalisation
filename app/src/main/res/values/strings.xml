@@ -25,7 +25,8 @@
     <string name="altitude">Altitude: %1$f</string>
 
     <!-- Locate screen -->
-    <string name="request_location">Request location</string>
+    <string name="request_location_gps">Request GPS location</string>
+    <string name="request_location_geomagnetic">Request geomagnetic location</string>
 
     <!-- Contact screen -->
     <string name="vibrate">Vibrate</string>
