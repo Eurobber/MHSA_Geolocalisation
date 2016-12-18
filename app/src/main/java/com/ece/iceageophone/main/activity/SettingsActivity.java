@@ -153,7 +153,7 @@ public class SettingsActivity extends AppCompatActivity
                     // Set new password if input
                     if(!isEmpty(newPwd.getText().toString()))
                     {
-                        if(newPwd.getText().toString()==localPwd.getText().toString()){
+                        if(newPwd.getText().toString().equals(localPwd.getText().toString())){
                             PreferenceChecker.setPassword(SettingsActivity.this, newPwd.getText().toString());
                         }
                         else{

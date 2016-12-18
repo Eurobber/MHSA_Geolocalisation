@@ -26,6 +26,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import static com.ece.iceageophone.main.util.PreferenceChecker.SETPASS;
+import static com.ece.iceageophone.main.util.PreferenceChecker.SETTGT;
+import static com.ece.iceageophone.main.util.PreferenceChecker.SETTGTPASS;
 
 public class LocateActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
@@ -35,6 +37,9 @@ public class LocateActivity extends AppCompatActivity
     private Button requestLocationButton = null;
     private GoogleMap googleMap;
     private Location targetLocation = null;
+
+    private String remoteNumber;
+    private String remotePassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,8 +80,8 @@ public class LocateActivity extends AppCompatActivity
             requestLocationButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO getSharedPreferences() to get target phone number and password
-                    CommandSender.sendCommand(Command.GET_LOCATION, "0606698350", "password");
+                    getRemote();
+                    CommandSender.sendCommand(Command.GET_LOCATION, remoteNumber, remotePassword);
                 }
             });
         }
@@ -161,6 +166,11 @@ public class LocateActivity extends AppCompatActivity
         }
 
         return false;
+    }
+
+    private void getRemote(){
+        this.remoteNumber = PreferenceChecker.getPreferences(LocateActivity.this).getString(SETTGT, null);
+        this.remotePassword = PreferenceChecker.getPreferences(LocateActivity.this).getString(SETTGTPASS, null);
     }
 
 }
