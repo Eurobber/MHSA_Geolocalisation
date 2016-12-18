@@ -134,7 +134,7 @@ public class HomeActivity extends AppCompatActivity
         sendSmsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CommandSender.sendCommand(Command.GET_LOCATION, phoneNumberEditText.getText().toString(), smsBodyEditText.getText().toString());
+                CommandSender.sendCommand(Command.GET_GPS_LOCATION, phoneNumberEditText.getText().toString(), smsBodyEditText.getText().toString());
             }
         });
     }

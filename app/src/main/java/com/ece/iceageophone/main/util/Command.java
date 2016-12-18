@@ -2,7 +2,8 @@ package com.ece.iceageophone.main.util;
 
 public enum Command {
 
-    GET_LOCATION("location"),
+    GET_GPS_LOCATION("gps_location"),
+    GET_GEOMAGNETIC_LOCATION("geomagnetic_location"),
     VIBRATE("vibrate"),
     RING("ring");
 
