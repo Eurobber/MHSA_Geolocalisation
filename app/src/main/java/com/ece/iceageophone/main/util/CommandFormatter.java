@@ -91,6 +91,29 @@ public class CommandFormatter {
     }
 
     /**
+     *
+     * @param message
+     * @return
+     */
+    public static boolean isCommand(String message) {
+        if (message != null || message.isEmpty()) {
+            // Splitting the message
+            String[] splitMessage = message.split(CommandFormatter.SEPARATOR);
+            // Checking message format
+            if (splitMessage.length >= 3) {
+                if (splitMessage[0].equals(CommandFormatter.APPLICATION_NAME)) {
+//                  TODO vérification du mot de passe if (splitMessage[1].equals(hash de notre mot de passe))
+                    return true;
+                }
+                // Else the message is ignored
+            }
+            // Else the message is ignored
+        }
+        // Else the message is ignored
+        return false;
+    }
+
+    /**
      * Parse String to Location
      * @return
      */
