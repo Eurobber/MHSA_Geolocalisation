@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/content_main"
     android:layout_width="match_parent"
@@ -8,15 +7,6 @@
     tools:context="com.ece.iceageophone.main.activity.LocateActivity"
     tools:showIn="@layout/locate_app_bar">
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/request_location_gps_button"
-        android:text="@string/request_location_gps"
-        android:layout_marginBottom="119dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:background="@color/iceagegradcenter"/>
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         android:name="com.google.android.gms.maps.SupportMapFragment"
@@ -24,13 +14,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/request_location_gps_button"
+        android:text="@string/request_location_gps"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@color/iceagegradcenter"/>
+
     <Button
         android:text="@string/request_location_geomagnetic"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="57dp"
+        android:layout_marginBottom="49dp"
+        android:background="@color/iceagegradcenter"
         android:id="@+id/request_location_geomagnetic_button" />
 
 </RelativeLayout>
