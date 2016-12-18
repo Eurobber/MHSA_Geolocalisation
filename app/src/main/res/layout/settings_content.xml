@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.ece.iceageophone.main.activity.SettingsActivity"
+    tools:showIn="@layout/settings_app_bar">
+
+    <Button
+        android:id="@+id/saveSettingsBtn"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/side_nav_bar"
+        android:textAlignment="center"
+        android:text="Save Settings"
+        android:textSize="18sp"
+        android:layout_height="58dp" />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/TVEnabled"
+        android:layout_toRightOf="@+id/NewTVPassword"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="10dp"
+        android:id="@+id/spinnerApp"
+        android:layout_alignBottom="@+id/TVEnabled" />
+
+    <TextView
+        android:text="@string/application_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/TVEnabled"
+        android:layout_marginTop="106dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignLeft="@+id/TVTargetPwd"
+        android:layout_alignStart="@+id/TVTargetPwd" />
+
+    <TextView
+        android:text="@string/target_phone_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/TVTarget"
+        android:layout_marginTop="24dp"
+        android:layout_below="@+id/TVEnabled"
+        android:layout_alignLeft="@+id/TVTargetPwd"
+        android:layout_alignStart="@+id/TVTargetPwd" />
+
+    <TextView
+        android:text="@string/target_phone_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/TVTargetPwd"
+        android:layout_below="@+id/TVTarget"
+        android:layout_alignLeft="@+id/NewTVPassword"
+        android:layout_alignStart="@+id/NewTVPassword"
+        android:layout_marginTop="20dp" />
+
+    <TextView
+        android:text="@string/enter_new_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/NewTVPassword"
+        android:layout_below="@+id/TVTargetPwd"
+        android:layout_alignLeft="@+id/TVOldPassword"
+        android:layout_alignStart="@+id/TVOldPassword"
+        android:layout_marginTop="49dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="phone"
+        android:ems="10"
+        android:layout_marginTop="7dp"
+        android:layout_marginLeft="31dp"
+        android:layout_marginRight="90dp"
+        android:layout_below="@+id/spinnerApp"
+        android:layout_toRightOf="@+id/TVTarget"
+        android:layout_toEndOf="@+id/TVTarget"
+        android:id="@+id/ETPhone" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="90dp"
+        android:ems="10"
+        android:layout_below="@+id/TVTarget"
+        android:layout_toRightOf="@+id/TVTargetPwd"
+        android:layout_toEndOf="@+id/TVTargetPwd"
+        android:id="@+id/ETPhonePwd" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="34dp"
+        android:layout_marginRight="90dp"
+        android:ems="10"
+        android:layout_below="@+id/ETPhonePwd"
+        android:layout_toRightOf="@+id/NewTVPassword"
+        android:layout_toEndOf="@+id/NewTVPassword"
+        android:id="@+id/ETNew" />
+
+    <TextView
+        android:text="@string/enter_old_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/TVOldPassword"
+        android:layout_marginLeft="27dp"
+        android:layout_marginStart="27dp"
+        android:layout_alignBaseline="@+id/ETOld"
+        android:layout_alignBottom="@+id/ETOld"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:layout_marginTop="65dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="30dp"
+        android:ems="10"
+        android:layout_below="@+id/ETNew"
+        android:layout_toRightOf="@+id/TVOldPassword"
+        android:layout_toEndOf="@+id/TVOldPassword"
+        android:id="@+id/ETOld" />
+
+</RelativeLayout>

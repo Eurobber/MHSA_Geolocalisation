@@ -1,6 +1,7 @@
 package com.ece.iceageophone.main.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -10,11 +11,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.ece.iceageophone.main.R;
 
+import static com.ece.iceageophone.main.activity.SettingsActivity.SET;
+import static com.ece.iceageophone.main.activity.SettingsActivity.SETPASS;
+
 public class SecureActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +38,15 @@ public class SecureActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        // Force password definition
+        sharedPreferences = getBaseContext().getSharedPreferences(SET, MODE_PRIVATE);
+
+        if (!sharedPreferences.contains(SETPASS)) {
+            // Display a small text message to prompt the user for a new password
+            Toast.makeText(this, "You must enter a new password", Toast.LENGTH_SHORT).show();
+
+        }
     }
 
     @Override

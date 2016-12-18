@@ -1,6 +1,7 @@
 package com.ece.iceageophone.main.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -12,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.ece.iceageophone.main.R;
 import com.ece.iceageophone.main.util.Command;
@@ -23,6 +25,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import static com.ece.iceageophone.main.activity.SettingsActivity.SET;
+import static com.ece.iceageophone.main.activity.SettingsActivity.SETPASS;
+
 public class LocateActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
 
@@ -31,6 +36,8 @@ public class LocateActivity extends AppCompatActivity
     private Button requestLocationButton = null;
     private GoogleMap googleMap;
     private Location targetLocation = null;
+
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +54,15 @@ public class LocateActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        // Force password definition
+        sharedPreferences = getBaseContext().getSharedPreferences(SET, MODE_PRIVATE);
+
+        if (!sharedPreferences.contains(SETPASS)) {
+            // Display a small text message to prompt the user for a new password
+            Toast.makeText(this, "You must enter a new password", Toast.LENGTH_SHORT).show();
+
+        }
 
         // Get location data
         Bundle bundle = getIntent().getExtras();

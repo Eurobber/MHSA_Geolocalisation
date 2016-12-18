@@ -3,6 +3,7 @@ package com.ece.iceageophone.main.activity;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -17,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.ece.iceageophone.main.R;
 import com.ece.iceageophone.main.data.LogRecord;
@@ -31,6 +33,8 @@ import static android.R.attr.path;
 import static android.text.TextUtils.isEmpty;
 import static com.ece.iceageophone.main.R.id.phone_number_edit_text;
 import static com.ece.iceageophone.main.activity.HistoryActivity.OUTPUTFILE;
+import static com.ece.iceageophone.main.activity.SettingsActivity.SET;
+import static com.ece.iceageophone.main.activity.SettingsActivity.SETPASS;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -40,8 +44,8 @@ public class HomeActivity extends AppCompatActivity
 
     private EditText phoneNumberEditText;
     private EditText smsBodyEditText;
-
     private Button sendSmsButton;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +70,8 @@ public class HomeActivity extends AppCompatActivity
                         Manifest.permission.RECEIVE_SMS,
                         Manifest.permission.ACCESS_FINE_LOCATION},
                 1);
+
+        sharedPreferences = getBaseContext().getSharedPreferences(SET, MODE_PRIVATE);
     }
 
     @Override
@@ -127,6 +133,17 @@ public class HomeActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
+
+        if (!sharedPreferences.contains(SETPASS)) {
+            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+            startActivity(intent);
+            overridePendingTransition(0, 0);
+            finish();
+
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            drawer.closeDrawer(GravityCompat.START);
+        }
+
         Log.d(TAG, "Start application");
 
         phoneNumberEditText = (EditText) findViewById(phone_number_edit_text);

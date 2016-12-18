@@ -42,4 +42,16 @@
 
     <!-- Hints -->
     <string name="hint">Search records ...</string>
+
+    <!-- Settings -->
+    <string name="set_uimode">Change UI appearance</string>
+    <string name="set_pwd">Change your local password</string>
+    <string name="set_target">Change the target phone number</string>
+    <string name="set_mode">Enable/Disable the app</string>
+    <string name="enter_new_password">Change Password To</string>
+    <string name="application_status">Application status</string>
+    <string name="enter_old_password">Enter password to confirm</string>
+    <string name="target_phone_number">Target Phone Number</string>
+    <string name="target_phone_password">Target Phone Password</string>
+
 </resources>
