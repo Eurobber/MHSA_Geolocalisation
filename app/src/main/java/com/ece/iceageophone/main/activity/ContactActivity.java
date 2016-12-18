@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.ece.iceageophone.main.R;
+import com.ece.iceageophone.main.data.LogRecord;
 import com.ece.iceageophone.main.util.Command;
 import com.ece.iceageophone.main.util.CommandSender;
 import com.ece.iceageophone.main.util.PreferenceChecker;
@@ -58,6 +59,8 @@ public class ContactActivity extends AppCompatActivity
                 // Send vibrate command
                 getRemote();
                 CommandSender.sendCommand(Command.VIBRATE, remoteNumber, remotePassword);
+                Toast.makeText(ContactActivity.this, "Vibrate request sequent to "+remoteNumber, Toast.LENGTH_SHORT).show();
+                LogRecord.addRecord(getApplicationContext(), 2, null, remoteNumber);
             }
         });
 
@@ -67,6 +70,8 @@ public class ContactActivity extends AppCompatActivity
                 // Send ring command
                 getRemote();
                 CommandSender.sendCommand(Command.RING, remoteNumber, remotePassword);
+                Toast.makeText(ContactActivity.this, "Ring request sequent to "+remoteNumber, Toast.LENGTH_SHORT).show();
+                LogRecord.addRecord(getApplicationContext(), 3, null, remoteNumber);
             }
         });
 
@@ -75,6 +80,8 @@ public class ContactActivity extends AppCompatActivity
             public void onClick(View v) {
                 // Send instructions command
                 getRemote();
+                Toast.makeText(ContactActivity.this, "Instructions sent to"+remoteNumber, Toast.LENGTH_SHORT).show();
+                LogRecord.addRecord(getApplicationContext(), 4, null, remoteNumber);
                 /*CommandSender.sendCommand("Follow these instructions !", remoteNumber, remotePassword);*/
 
             }

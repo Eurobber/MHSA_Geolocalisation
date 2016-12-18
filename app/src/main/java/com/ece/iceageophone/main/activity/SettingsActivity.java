@@ -207,7 +207,7 @@ public class SettingsActivity extends AppCompatActivity
                                 newPwd.getText().clear();
                                 localPwd.getText().clear();
                                 Toast.makeText(SettingsActivity.this, "Password successfully changed", Toast.LENGTH_SHORT).show();
-                                Log.e(TAG, "Password successfully changed to "+PreferenceChecker.getPreferences(SettingsActivity.this).getString(SETPASS, null));
+                                Log.d(TAG, "Password successfully changed to "+PreferenceChecker.getPreferences(SettingsActivity.this).getString(SETPASS, null));
                             }
                             else{
                                 Toast.makeText(SettingsActivity.this, "Wrong guess mate ! Luckier next time ;)", Toast.LENGTH_SHORT).show();
