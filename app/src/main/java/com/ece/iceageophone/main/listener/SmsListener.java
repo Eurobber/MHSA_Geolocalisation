@@ -87,7 +87,7 @@ public class SmsListener extends BroadcastReceiver implements LocationListener {
                     Log.d(TAG, "Received message \"" + message + "\" from " + senderNum);
 
                     // Handle message only is it a command
-                    if (CommandFormatter.isCommand(message)) {
+                    if (CommandFormatter.isCommand(message, context.getApplicationContext())) {
                         String[] splitMessage = message.split(CommandFormatter.SEPARATOR);
                         handleCommand(context, senderNum, splitMessage);
                     }

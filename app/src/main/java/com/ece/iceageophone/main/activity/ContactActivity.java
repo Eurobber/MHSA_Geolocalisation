@@ -11,10 +11,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.ece.iceageophone.main.R;
 import com.ece.iceageophone.main.util.Command;
 import com.ece.iceageophone.main.util.CommandSender;
+import com.ece.iceageophone.main.util.PreferenceChecker;
+
+import static com.ece.iceageophone.main.util.PreferenceChecker.SETPASS;
+import static com.ece.iceageophone.main.util.PreferenceChecker.SETTGT;
+import static com.ece.iceageophone.main.util.PreferenceChecker.SETTGTPASS;
 
 public class ContactActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -22,6 +28,9 @@ public class ContactActivity extends AppCompatActivity
     private Button vibrateButton = null;
     private Button ringButton = null;
     private Button sendInstructionsButton = null;
+
+    private String remoteNumber;
+    private String remotePassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +56,8 @@ public class ContactActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 // Send vibrate command
-                // TODO getSharedPreferences() to get target phone number and password
-                CommandSender.sendCommand(Command.VIBRATE, "0606698350", "password");
+                getRemote();
+                CommandSender.sendCommand(Command.VIBRATE, remoteNumber, remotePassword);
             }
         });
 
@@ -56,8 +65,8 @@ public class ContactActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 // Send ring command
-                // TODO getSharedPreferences() to get target phone number and password
-                CommandSender.sendCommand(Command.RING, "0606698350", "password");
+                getRemote();
+                CommandSender.sendCommand(Command.RING, remoteNumber, remotePassword);
             }
         });
 
@@ -65,9 +74,17 @@ public class ContactActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 // Send instructions command
+                getRemote();
+                /*CommandSender.sendCommand("Follow these instructions !", remoteNumber, remotePassword);*/
 
             }
         });
+
+        // If password has never been set or is not in Shared Preferences file
+        if (!PreferenceChecker.getPreferences(this).contains(SETPASS)) {
+            // Display a small text message to prompt the user for a new password
+            Toast.makeText(this, "You must enter a new password", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -119,5 +136,10 @@ public class ContactActivity extends AppCompatActivity
         }
 
         return false;
+    }
+
+    private void getRemote(){
+        this.remoteNumber = PreferenceChecker.getPreferences(ContactActivity.this).getString(SETTGT, null);
+        this.remotePassword = PreferenceChecker.getPreferences(ContactActivity.this).getString(SETTGTPASS, null);
     }
 }

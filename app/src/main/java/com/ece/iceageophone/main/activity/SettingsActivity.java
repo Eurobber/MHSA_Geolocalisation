@@ -1,19 +1,16 @@
 package com.ece.iceageophone.main.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.audiofx.BassBoost;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -23,28 +20,24 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.ece.iceageophone.main.R;
-import com.ece.iceageophone.main.util.PasswordChecker;
-import com.ece.iceageophone.main.util.SmsSender;
+import com.ece.iceageophone.main.util.PreferenceChecker;
 
-import static android.R.attr.name;
-import static android.R.attr.path;
+import java.util.Set;
+
 import static android.text.TextUtils.isEmpty;
 import static com.ece.iceageophone.main.R.id.ETNew;
 import static com.ece.iceageophone.main.R.id.ETOld;
 import static com.ece.iceageophone.main.R.id.ETPhone;
 import static com.ece.iceageophone.main.R.id.ETPhonePwd;
-import static com.ece.iceageophone.main.R.id.phone_number_edit_text;
 import static com.ece.iceageophone.main.R.id.saveSettingsBtn;
-import static com.ece.iceageophone.main.util.PasswordChecker.SET;
-import static com.ece.iceageophone.main.util.PasswordChecker.SETPASS;
-import static com.ece.iceageophone.main.util.PasswordChecker.SETTGT;
-import static com.ece.iceageophone.main.util.PasswordChecker.SETTGTPASS;
+import static com.ece.iceageophone.main.util.PreferenceChecker.SETPASS;
+import static com.ece.iceageophone.main.util.PreferenceChecker.SETTGT;
+import static com.ece.iceageophone.main.util.PreferenceChecker.SETTGTPASS;
 
 public class SettingsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "Settings Activity";
-    private SharedPreferences sharedPreferences;
 
     private String[] arraySpinner;
 
@@ -79,9 +72,8 @@ public class SettingsActivity extends AppCompatActivity
                 android.R.layout.simple_spinner_item, arraySpinner);
         s.setAdapter(adapter);
 
-        // Ask for a new password if no previous password
-
-        if (!PasswordChecker.getPreferences(this).contains(SETPASS)) {
+        // If password has never been set or is not in Shared Preferences file
+        if (!PreferenceChecker.getPreferences(this).contains(SETPASS)) {
             // Display a small text message to prompt the user for a new password
             Toast.makeText(this, "You must enter a new password", Toast.LENGTH_SHORT).show();
         }
@@ -104,8 +96,8 @@ public class SettingsActivity extends AppCompatActivity
     }
 
     /*
-             Implémentation des liens de la barre de navigation
-        */
+        Implémentation des liens de la barre de navigation
+    */
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -154,54 +146,84 @@ public class SettingsActivity extends AppCompatActivity
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Set new phone number and new remote password
-                if(isNumber() && !isEmpty(remotePwd.getText().toString())){
-                    sharedPreferences
-                            .edit()
-                            .putString(SETTGT, number.getText().toString())
-                            .putString(SETTGTPASS, remotePwd.getText().toString())
-                            .apply();
-                    if(sharedPreferences.contains(SETTGT)&&sharedPreferences.contains(SETTGTPASS)){
-                        Toast.makeText(SettingsActivity.this, "Successfully stored new remote number and new remote password !", Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, "Successfully stored new remote number and new remote password !");
-                    }
-                }
-                else if(!isNumber())Toast.makeText(SettingsActivity.this, "Phone number has to be a ... number !", Toast.LENGTH_SHORT).show();
 
                 // If password has never been set or is not in Shared Preferences file
-                if (!sharedPreferences.contains(SETPASS)) {
-                    if(!isEmpty(newPwd.getText().toString())){
-                        sharedPreferences
-                                .edit()
-                                .putString(SETPASS, newPwd.getText().toString())
-                                .apply();
-                        if(sharedPreferences.contains(SETPASS)){
-                            Toast.makeText(SettingsActivity.this, "Successfully stored new local password !", Toast.LENGTH_SHORT).show();
-                            Log.d(TAG, "Successfully stored new local password !");
+                if(!PreferenceChecker.getPreferences(SettingsActivity.this).contains(SETPASS))
+                {
+                    // Set new password if input
+                    if(!isEmpty(newPwd.getText().toString()))
+                    {
+                        if(newPwd.getText().toString()==localPwd.getText().toString()){
+                            PreferenceChecker.setPassword(SettingsActivity.this, newPwd.getText().toString());
                         }
+                        else{
+                            Toast.makeText(SettingsActivity.this, "Passwords don't match.", Toast.LENGTH_SHORT).show();
+                        }
+                        newPwd.getText().clear();
+                        localPwd.getText().clear();
+                    }
+                    // Ask for it if no input
+                    else{
+                        // Display a small text message to prompt the user for a new password
+                        Toast.makeText(SettingsActivity.this, "You must enter a new password", Toast.LENGTH_SHORT).show();
                     }
                 }
-                // If password is changed, we have to check local password to confirm
-                else if(!isEmpty(newPwd.getText().toString()) && !isEmpty(localPwd.getText().toString())){
-                    if(sharedPreferences.getString(SETPASS, null).equals(localPwd.getText().toString())){
-                        sharedPreferences
-                                .edit()
-                                .putString(SETPASS, newPwd.getText().toString())
-                                .apply();
-                        Toast.makeText(SettingsActivity.this, "Password changed to "+sharedPreferences.getString(SETPASS, null), Toast.LENGTH_SHORT).show();
-                        Log.e(TAG, "Password changed to "+sharedPreferences.getString(SETPASS, null));
+
+                // If device is protected with a local password
+                else
+                {
+                    // Check that the inputs are well-formatted and that the local password is given before submitting
+                    if(!isEmpty(number.getText().toString()))
+                    {
+                        newPwd.getText().clear();
+                        // Check number format
+                        if(!isNumber()) Toast.makeText(SettingsActivity.this, "Phone number has to be a ... number !", Toast.LENGTH_SHORT).show();
+                        else{
+                            // Check presence of remote password
+                            if(isEmpty(remotePwd.getText().toString())){
+                                Toast.makeText(SettingsActivity.this, "Please specify remote password.", Toast.LENGTH_SHORT).show();
+                            }
+                            else if(isEmpty(localPwd.getText().toString())) Toast.makeText(SettingsActivity.this, "Couldn't save, please specify local password.", Toast.LENGTH_SHORT).show();
+                                // If both remote number and remote password, save them
+                            else if(PreferenceChecker.isLocalPassword(SettingsActivity.this, localPwd.getText().toString())){
+                                PreferenceChecker.setRemoteNumber(SettingsActivity.this, number.getText().toString());
+                                PreferenceChecker.setRemotePassword(SettingsActivity.this, remotePwd.getText().toString());
+                                number.getText().clear();
+                                remotePwd.getText().clear();
+                                localPwd.getText().clear();
+                            }
+                        }
                     }
+
                     else{
-                        Toast.makeText(SettingsActivity.this, "Wrong guess mate ! Luckier next time ;)", Toast.LENGTH_SHORT).show();
-                        Log.e(TAG, "Wrong password ! "+sharedPreferences.getString(SETPASS, null)+localPwd.getText().toString());
+                        if(isEmpty(localPwd.getText().toString()) || isEmpty(newPwd.getText().toString())){
+                            Toast.makeText(SettingsActivity.this, "Please enter a new password along with the old one.", Toast.LENGTH_SHORT).show();
+                            Log.e(TAG, "Please enter a new password along with the old one.");
+                        }
+
+                        if(!isEmpty(newPwd.getText().toString()) && !isEmpty(localPwd.getText().toString())){
+                            if(PreferenceChecker.isLocalPassword(SettingsActivity.this, localPwd.getText().toString())){
+                                PreferenceChecker.setPassword(SettingsActivity.this, newPwd.getText().toString());
+                                newPwd.getText().clear();
+                                localPwd.getText().clear();
+                                Toast.makeText(SettingsActivity.this, "Password successfully changed", Toast.LENGTH_SHORT).show();
+                                Log.e(TAG, "Password successfully changed to "+PreferenceChecker.getPreferences(SettingsActivity.this).getString(SETPASS, null));
+                            }
+                            else{
+                                Toast.makeText(SettingsActivity.this, "Wrong guess mate ! Luckier next time ;)", Toast.LENGTH_SHORT).show();
+                                Log.e(TAG, "Wrong password ! ");
+                            }
+                        }
+
                     }
+
                 }
             }
         });
     }
 
     private boolean isNumber() {
-        if (!isEmpty(number.getText().toString()) && number.getText().toString().matches("\\d+"))
+        if (number.getText().toString().matches("\\d+"))
             return true;
         return false;
     }

@@ -23,9 +23,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.ece.iceageophone.main.R;
 import com.ece.iceageophone.main.data.LogRecord;
+import com.ece.iceageophone.main.util.PreferenceChecker;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -36,6 +38,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 import static android.R.id.input;
+import static com.ece.iceageophone.main.util.PreferenceChecker.SETPASS;
 
 public class HistoryActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -67,6 +70,12 @@ public class HistoryActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        // If password has never been set or is not in Shared Preferences file
+        if (!PreferenceChecker.getPreferences(this).contains(SETPASS)) {
+            // Display a small text message to prompt the user for a new password
+            Toast.makeText(this, "You must enter a new password", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

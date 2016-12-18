@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.ece.iceageophone.main.R;
 import com.ece.iceageophone.main.util.Command;
 import com.ece.iceageophone.main.util.CommandSender;
-import com.ece.iceageophone.main.util.PasswordChecker;
+import com.ece.iceageophone.main.util.PreferenceChecker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -25,7 +25,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import static com.ece.iceageophone.main.util.PasswordChecker.SETPASS;
+import static com.ece.iceageophone.main.util.PreferenceChecker.SETPASS;
 
 public class LocateActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
@@ -53,10 +53,10 @@ public class LocateActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        if (!PasswordChecker.getPreferences(this).contains(SETPASS)) {
+        // If password has never been set or is not in Shared Preferences file
+        if (!PreferenceChecker.getPreferences(this).contains(SETPASS)) {
             // Display a small text message to prompt the user for a new password
             Toast.makeText(this, "You must enter a new password", Toast.LENGTH_SHORT).show();
-
         }
 
         // Get location data

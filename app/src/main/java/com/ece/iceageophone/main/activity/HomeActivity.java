@@ -15,11 +15,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.ece.iceageophone.main.R;
 import com.ece.iceageophone.main.util.Command;
 import com.ece.iceageophone.main.util.CommandSender;
-import static com.ece.iceageophone.main.util.PasswordChecker.*;
+import com.ece.iceageophone.main.util.PreferenceChecker;
+
+import static com.ece.iceageophone.main.util.PreferenceChecker.SETPASS;
 
 public class HomeActivity extends AppCompatActivity
 
@@ -56,6 +59,12 @@ public class HomeActivity extends AppCompatActivity
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.VIBRATE},
                 1);
+
+        // If password has never been set or is not in Shared Preferences file
+        if (!PreferenceChecker.getPreferences(this).contains(SETPASS)) {
+            // Display a small text message to prompt the user for a new password
+            Toast.makeText(this, "You must enter a new password", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

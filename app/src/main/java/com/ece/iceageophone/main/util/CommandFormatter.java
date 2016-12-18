@@ -1,8 +1,10 @@
 package com.ece.iceageophone.main.util;
 
+import android.content.Context;
 import android.location.Location;
 import android.util.Log;
 
+import com.ece.iceageophone.main.activity.HomeActivity;
 import com.ece.iceageophone.main.exception.MessageFormatException;
 
 import java.io.UnsupportedEncodingException;
@@ -95,15 +97,14 @@ public class CommandFormatter {
      * @param message
      * @return
      */
-    public static boolean isCommand(String message) {
+    public static boolean isCommand(String message, Context context) {
         if (message != null || message.isEmpty()) {
             // Splitting the message
             String[] splitMessage = message.split(CommandFormatter.SEPARATOR);
             // Checking message format
             if (splitMessage.length >= 3) {
                 if (splitMessage[0].equals(CommandFormatter.APPLICATION_NAME)) {
-//                  TODO vérification du mot de passe if (splitMessage[1].equals(hash de notre mot de passe))
-                    return true;
+                    if(PreferenceChecker.isHashedLocalPassword(context, splitMessage[1])) return true;
                 }
                 // Else the message is ignored
             }

@@ -13,9 +13,9 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.ece.iceageophone.main.R;
-import com.ece.iceageophone.main.util.PasswordChecker;
+import com.ece.iceageophone.main.util.PreferenceChecker;
 
-import static com.ece.iceageophone.main.util.PasswordChecker.*;
+import static com.ece.iceageophone.main.util.PreferenceChecker.*;
 
 
 public class SecureActivity extends AppCompatActivity
@@ -40,10 +40,10 @@ public class SecureActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        if (!PasswordChecker.getPreferences(this).contains(SETPASS)) {
+        // If password has never been set or is not in Shared Preferences file
+        if (!PreferenceChecker.getPreferences(this).contains(SETPASS)) {
             // Display a small text message to prompt the user for a new password
             Toast.makeText(this, "You must enter a new password", Toast.LENGTH_SHORT).show();
-
         }
     }
 
