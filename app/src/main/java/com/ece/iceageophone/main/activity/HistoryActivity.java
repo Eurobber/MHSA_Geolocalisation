@@ -9,8 +9,12 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,39 +22,35 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.ece.iceageophone.main.R;
 import com.ece.iceageophone.main.data.LogRecord;
-import com.ece.iceageophone.main.util.SmsSender;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.List;
 
-import static android.R.id.list;
+import static android.R.id.input;
 
-public class HistoryActivity extends ActionBarActivity
+public class HistoryActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private EditText contextDisplay;
     private static final String TAG = "History";
+    public static final String OUTPUTFILE = "iceageo_log.txt";
+
     private ListView mListView;
     private Button flushHistory;
-    public static final String OUTPUTFILE = "iceageo_log.txt";
-    private ArrayList<LogRecord> LLR;
 
-    private InputStream in;
+    private String path;
     private BufferedReader bfr;
-    String ln;
+
+    ArrayAdapter<String> adapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,13 +83,14 @@ public class HistoryActivity extends ActionBarActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.search_menu, menu);
-        final MenuItem searchItem = menu.findItem(R.id.action_search);
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        // Search Bar filter
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-
+                readRecords(query);
                 return false;
             }
 
@@ -98,14 +99,13 @@ public class HistoryActivity extends ActionBarActivity
                 return false;
             }
         });
-
         return true;
     }
 
 
 
     /*
-         Implémentation des liens de la barre de navigation
+         Implementing Navigation links
     */
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -152,56 +152,94 @@ public class HistoryActivity extends ActionBarActivity
     protected void onStart(){
         super.onStart();
         Log.d(TAG, "Starting History");
-        mListView = (ListView) findViewById(R.id.listView_history);
 
+        // Get Listview
+        mListView = (ListView) findViewById(R.id.listView_history);
+        // Get FlushHistory button
         flushHistory = (Button) findViewById(R.id.flushHistoryBtn);
+
+        // Generate file path
+        path = getApplicationContext().getFilesDir() +"/"+ OUTPUTFILE;
+
+        // Reads records if exist
+        readRecords("");
+
+        // Listener on Flush History button
         flushHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(LogRecord.flushRecords(getApplicationContext())){
+                if(flushRecords(getApplicationContext())){
                     finish();
                     startActivity(getIntent());
-                };
+                }
+                else{
+                    AlertDialog.Builder builder = new AlertDialog.Builder(HistoryActivity.this);
+                    builder.setMessage(R.string.no_file_message)
+                            .setTitle(R.string.no_file);
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
             }
         });
+    }
 
-        LLR = fetchRecords();
-        if(LLR!=null)
-        {
-            List<String> LS = new ArrayList<>();
-            for(LogRecord lr : LLR){
-                LS.add(lr.getRecord());
-                Log.d(TAG, "Read record from " + getApplicationContext().getFilesDir()+"/"+OUTPUTFILE);
+
+    private void readRecords(String filter){
+        ArrayList<String> listRec = new ArrayList<>();
+
+        // Read data from file
+        File f = new File(path);
+        if(f.exists()){
+            try {
+                bfr = new BufferedReader(new FileReader(path));
+                Log.d(TAG, "Log read from " + path);
+                String line = "";
+                while ((line = bfr.readLine()) != null) {
+                    listRec.add(line);
+                }
+                bfr.close();
+            } catch (IOException e) {
+                Log.d(TAG, "Unable to read from file "+path);
+                e.printStackTrace();
             }
 
-            String[] stringArray = LS.toArray(new String[0]);
-
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(HistoryActivity.this, android.R.layout.simple_list_item_1, stringArray);
-            mListView.setAdapter(adapter);
+            // Populate ListView accordingly
+            if (filter==""){
+                String[] arr = new String[listRec.size()];
+                for (int i=0; i<listRec.size(); i++){
+                    arr[i] = listRec.get(i).toString();
+                }
+                adapter = new ArrayAdapter<String>(HistoryActivity.this, android.R.layout.simple_list_item_1, arr);
+                mListView.setAdapter(adapter);
+            }
+            else{
+                ArrayList<String> filteredList = new ArrayList<>();
+                for(String str : listRec)
+                {
+                    if (str.contains(filter)) filteredList.add(str);
+                }
+                String[] filteredArr = new String[filteredList.size()];
+                for (int i=0; i<filteredList.size(); i++){
+                    filteredArr[i] = filteredList.get(i).toString();
+                }
+                adapter = new ArrayAdapter<String>(HistoryActivity.this, android.R.layout.simple_list_item_1, filteredArr);
+                mListView.setAdapter(adapter);
+            }
         }
     }
 
-    public ArrayList<LogRecord> fetchRecords(){
 
-        ArrayList<LogRecord> LLR = new ArrayList<LogRecord>();
-        BufferedReader BR = null;
 
+    private boolean flushRecords(Context context)
+    {
         try {
-            StringBuffer output = new StringBuffer();
-            BR = new BufferedReader(new FileReader(getApplicationContext().getFilesDir()+"/"+OUTPUTFILE));
-            Log.d(TAG, "Log read from " + getApplicationContext().getFilesDir()+"/"+OUTPUTFILE);
-            String line = "";
-            while ((line = BR.readLine()) != null) {
-                LogRecord r = new LogRecord(line);
-                LLR.add(r);
-                Log.d(TAG, "Output file now has "+LLR.size()+" record(s)");
-            }
-            BR.close();
-        } catch (IOException e) {
+            context.deleteFile(OUTPUTFILE);
+            Log.d(TAG, "File deleted : " + path);
+            return true;
+        } catch (Exception e) {
+            Log.e(TAG, "Cannot delete file " + path, e);
             e.printStackTrace();
-            return null;
         }
-
-        return LLR;
+        return false;
     }
 }

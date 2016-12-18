@@ -34,4 +34,12 @@
     <!-- History screen -->
     <string name="action_search">Search</string>
 
+    <!-- Alert -->
+    <string name="no_file">Nothing to delete</string>
+    <string name="no_file_message">There are no records to delete !</string>
+    <string name="missing_data">Missing compulsory data</string>
+    <string name="missing_data_message">Cannot send SMS without number and content !</string>
+
+    <!-- Hints -->
+    <string name="hint">Search records ...</string>
 </resources>

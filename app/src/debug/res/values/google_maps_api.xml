@@ -1,6 +1,6 @@
 <resources>
     <!-- Gestionnaire d'API https://console.developers.google.com/apis/credentials?project=ivory-sentry-152816 -->
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
-        AIzaSyA5aaU5uEL2f2UNGm1Xw8GR5BJRY3I1iO4
+    <string name="google_maps_key" translatable="false" templateMergeStrategy="preserve">
+        AIzaSyBtcxfDTe0jkHv3rqEeBEEWy98uRCvXgoo
     </string>
 </resources>
