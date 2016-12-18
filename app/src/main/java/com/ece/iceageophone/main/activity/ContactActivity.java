@@ -1,7 +1,6 @@
 package com.ece.iceageophone.main.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -11,22 +10,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.Button;
 
 import com.ece.iceageophone.main.R;
-
-import static com.ece.iceageophone.main.activity.SettingsActivity.SET;
-import static com.ece.iceageophone.main.activity.SettingsActivity.SETPASS;
+import com.ece.iceageophone.main.util.Command;
+import com.ece.iceageophone.main.util.CommandSender;
 
 public class ContactActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private SharedPreferences sharedPreferences;
+    private Button vibrateButton = null;
+    private Button ringButton = null;
+    private Button sendInstructionsButton = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.home_activity);
+        setContentView(R.layout.contact_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -39,15 +40,32 @@ public class ContactActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        // Force password definition
-        sharedPreferences = getBaseContext().getSharedPreferences(SET, MODE_PRIVATE);
+        this.vibrateButton = (Button) findViewById(R.id.vibrate_button);
+        this.ringButton = (Button) findViewById(R.id.ring_button);
+        this.sendInstructionsButton = (Button) findViewById(R.id.send_instructions_button);
 
-        if (!sharedPreferences.contains(SETPASS)) {
-            // Display a small text message to prompt the user for a new password
-            Toast.makeText(this, "You must enter a new password", Toast.LENGTH_SHORT).show();
+        vibrateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO getSharedPreferences() to get target phone number and password
+                CommandSender.sendCommand(Command.VIBRATE, "0606698350", "password");
+            }
+        });
 
-        }
+        this.ringButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Send ring command
+            }
+        });
 
+        this.sendInstructionsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Send instructions command
+
+            }
+        });
     }
 
     @Override
@@ -61,7 +79,7 @@ public class ContactActivity extends AppCompatActivity
     }
 
     /*
-    Implémentation des liens de la barre de navigation
+         Implémentation des liens de la barre de navigation
     */
     @SuppressWarnings("StatementWithEmptyBody")
     @Override

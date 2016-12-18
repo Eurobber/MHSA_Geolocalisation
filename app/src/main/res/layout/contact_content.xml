@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.ece.iceageophone.main.activity.ContactActivity"
+    tools:showIn="@layout/contact_app_bar">
+
+    <Button
+        android:text="@string/vibrate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="75dp"
+        android:id="@+id/vibrate_button"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:text="@string/ring"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ring_button"
+        android:layout_below="@+id/vibrate_button"
+        android:layout_alignLeft="@+id/vibrate_button"
+        android:layout_alignStart="@+id/vibrate_button"
+        android:layout_marginTop="68dp" />
+
+    <Button
+        android:text="@string/send_instructions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/send_instructions_button"
+        android:layout_marginTop="62dp"
+        android:layout_below="@+id/ring_button"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>
