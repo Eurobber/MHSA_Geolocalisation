@@ -94,7 +94,7 @@ public class LocateActivity extends AppCompatActivity
                 @Override
                 public void onClick(View v) {
                     // Send geomagnetic location request
-                    CommandSender.sendCommand(Command.GET_GEOMAGNETIC_LOCATION,"0606698350", "password");
+                    CommandSender.sendCommand(Command.GET_GEOMAGNETIC_LOCATION, remoteNumber, remotePassword);
                 }
             });
         }
