@@ -55,10 +55,10 @@ public class HomeActivity extends AppCompatActivity
         ActivityCompat.requestPermissions(
                 this,
                 new String[]{
-                Manifest.permission.SEND_SMS,
-                Manifest.permission.RECEIVE_SMS,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.VIBRATE},
+                    Manifest.permission.SEND_SMS,
+                    Manifest.permission.RECEIVE_SMS,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.VIBRATE},
                 1);
     }
 

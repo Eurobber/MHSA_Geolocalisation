@@ -34,10 +34,17 @@
 
     <!-- Settings -->
     <string name="action_settings">Settings</string>
+    <string name="string_desc_bck">Background showing Scrat holding a nut</string>
 
     <!-- History screen -->
     <string name="action_search">Search</string>
 
-    <string name="string_desc_bck">Background showing Scrat holding a nut</string>
+    <!-- Alert -->
+    <string name="no_file">Nothing to delete</string>
+    <string name="no_file_message">There are no records to delete !</string>
+    <string name="missing_data">Missing compulsory data</string>
+    <string name="missing_data_message">Cannot send SMS without number and content !</string>
 
+    <!-- Hints -->
+    <string name="hint">Search records ...</string>
 </resources>
