@@ -10,16 +10,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import com.ece.iceageophone.main.R;
+import com.ece.iceageophone.main.util.Command;
+import com.ece.iceageophone.main.util.CommandSender;
 
 public class ContactActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private Button vibrateButton = null;
+    private Button ringButton = null;
+    private Button sendInstructionsButton = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.home_activity);
+        setContentView(R.layout.contact_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -31,6 +39,33 @@ public class ContactActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        this.vibrateButton = (Button) findViewById(R.id.vibrate_button);
+        this.ringButton = (Button) findViewById(R.id.ring_button);
+        this.sendInstructionsButton = (Button) findViewById(R.id.send_instructions_button);
+
+        vibrateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO getSharedPreferences() to get target phone number and password
+                CommandSender.sendCommand(Command.VIBRATE, "0606698350", "password");
+            }
+        });
+
+        this.ringButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Send ring command
+            }
+        });
+
+        this.sendInstructionsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Send instructions command
+
+            }
+        });
     }
 
     @Override

@@ -9,8 +9,10 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
@@ -23,17 +25,18 @@ import com.ece.iceageophone.main.exception.MessageFormatException;
 import com.ece.iceageophone.main.util.Command;
 import com.ece.iceageophone.main.util.CommandFormatter;
 import com.ece.iceageophone.main.util.CommandSender;
-import com.ece.iceageophone.main.util.SmsSender;
 
 import static android.content.Context.LOCATION_SERVICE;
+import static android.content.Context.VIBRATOR_SERVICE;
 
 public class SmsListener extends BroadcastReceiver implements LocationListener {
 
     private static final String TAG = "SmsListener";
 
-    private static final long MIN_TIME = 1000;
-    private static final float MIN_DISTANCE = 1;
-    private static final float MAX_ACCURACY = 150;
+    private static final long LOCATION_MIN_TIME = 1000;
+    private static final float LOCATION_MIN_DISTANCE = 1;
+    private static final float LOCATION_MAX_ACCURACY = 150;
+    private static final long VIBRATION_DURATION = 10000;
 
     final SmsManager sms = SmsManager.getDefault();
 
@@ -104,7 +107,7 @@ public class SmsListener extends BroadcastReceiver implements LocationListener {
                     handleGetLocation(context, senderNum, splitMessage);
                     break;
                 case VIBRATE:
-                    vibrate();
+                    vibrate(context);
                 default:
                     break;
             }
@@ -143,7 +146,7 @@ public class SmsListener extends BroadcastReceiver implements LocationListener {
             Log.d(TAG, "No permission to access location");
             return;
         }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_MIN_TIME, LOCATION_MIN_DISTANCE, this);
     }
 
     /**
@@ -172,8 +175,15 @@ public class SmsListener extends BroadcastReceiver implements LocationListener {
         }
     }
 
-    private void vibrate() {
-
+    /**
+     * Vibrate the phone, works independently from the set ringer mode
+     * @param context
+     */
+    private void vibrate(Context context) {
+        AudioManager audiomanager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        Vibrator vibrator = (Vibrator) context.getSystemService(VIBRATOR_SERVICE);
+        long[] pattern = {0, 2000, 1000, 2000, 1000, 2000, 1000};
+        vibrator.vibrate(pattern, -1);
     }
 
     @Override
@@ -181,7 +191,7 @@ public class SmsListener extends BroadcastReceiver implements LocationListener {
         // Process changed location only if accuracy < 50m
         if (location.hasAccuracy()) {
             Log.d(TAG, "Location accuracy " + location.getAccuracy());
-            if (location.getAccuracy() < MAX_ACCURACY) {
+            if (location.getAccuracy() < LOCATION_MAX_ACCURACY) {
                 if (location != null && locationManager != null && context != null && senderNum != null && sentPassword != null) {
                     // Send location via SMS
                     CommandSender.sendCommand(Command.GET_LOCATION, senderNum, sentPassword, location);

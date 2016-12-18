@@ -27,11 +27,17 @@
     <!-- Locate screen -->
     <string name="request_location">Request location</string>
 
+    <!-- Contact screen -->
+    <string name="vibrate">Vibrate</string>
+    <string name="ring">Ring</string>
+    <string name="send_instructions">Send instructions</string>
+
     <!-- Settings -->
     <string name="action_settings">Settings</string>
-    <string name="string_desc_bck">Background showing Scrat holding a nut</string>
 
     <!-- History screen -->
     <string name="action_search">Search</string>
+
+    <string name="string_desc_bck">Background showing Scrat holding a nut</string>
 
 </resources>
