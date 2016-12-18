@@ -29,8 +29,11 @@
 
     <!-- Contact screen -->
     <string name="vibrate">Vibrate</string>
+    <string name="vibrate_hint">Forces the target phone to vibrate. Go to the Settings Menu to setup Target phone's number and password.</string>
     <string name="ring">Ring</string>
+    <string name="ring_hint">Forces the target phone to ring at maximum volume. Go to the Settings Menu to setup Target phone's number and password.</string>
     <string name="send_instructions">Send instructions</string>
+    <string name="send_instructions_hint">Opens an Alert screen on target phone and displays instructions to give your phone back.</string>
 
     <!-- Settings -->
     <string name="action_settings">Settings</string>

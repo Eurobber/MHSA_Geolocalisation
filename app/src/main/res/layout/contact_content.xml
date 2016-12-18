@@ -13,31 +13,68 @@
     tools:context="com.ece.iceageophone.main.activity.ContactActivity"
     tools:showIn="@layout/contact_app_bar">
 
-    <Button
-        android:text="@string/vibrate"
-        android:layout_width="wrap_content"
+    <TextView
+        android:text="@string/send_instructions_hint"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="75dp"
-        android:id="@+id/vibrate_button"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-
-    <Button
-        android:text="@string/ring"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/ring_button"
-        android:layout_below="@+id/vibrate_button"
-        android:layout_alignLeft="@+id/vibrate_button"
-        android:layout_alignStart="@+id/vibrate_button"
-        android:layout_marginTop="68dp" />
+        android:id="@+id/TVSend"
+        android:textAlignment="center"
+        android:layout_marginTop="53dp"
+        android:layout_below="@+id/ring_button"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <Button
         android:text="@string/send_instructions"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/send_instructions_button"
-        android:layout_marginTop="62dp"
-        android:layout_below="@+id/ring_button"
-        android:layout_centerHorizontal="true" />
+        android:layout_marginTop="19dp"
+        android:background="@color/iceagegradcenter"
+        android:layout_below="@+id/TVSend"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:text="@string/ring"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ring_button"
+        android:background="@color/iceagegradcenter"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:text="@string/ring_hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/TVRing"
+        android:textAlignment="center"
+        android:layout_marginBottom="17dp"
+        android:layout_above="@+id/ring_button"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:text="@string/vibrate_hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/TVVibrate"
+        android:textAlignment="center"
+        android:layout_marginTop="54dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:text="@string/vibrate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/vibrate_button"
+        android:background="@color/iceagegradcenter"
+        android:layout_marginTop="13dp"
+        android:layout_below="@+id/TVVibrate"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>

@@ -67,7 +67,7 @@ public class PreferenceChecker {
 
     public static boolean isHashedLocalPassword(Context act, String pwd){
         try {
-            if(Sha1Hasher.sha1smsMessage(pwd).equals(Sha1Hasher.sha1smsMessage(act.getSharedPreferences(SET, MODE_PRIVATE).getString(SETPASS, null)))) return true;
+            if(pwd.equals(Sha1Hasher.sha1smsMessage(act.getSharedPreferences(SET, MODE_PRIVATE).getString(SETPASS, null)))) return true;
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {

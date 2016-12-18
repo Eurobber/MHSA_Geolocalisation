@@ -10,6 +10,10 @@ import com.ece.iceageophone.main.exception.MessageFormatException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
+import static android.content.Context.MODE_PRIVATE;
+import static com.ece.iceageophone.main.util.PreferenceChecker.SET;
+import static com.ece.iceageophone.main.util.PreferenceChecker.SETPASS;
+
 public class CommandFormatter {
 
     private static final String TAG = "CommandFormatter";
@@ -97,7 +101,7 @@ public class CommandFormatter {
      * @param message
      * @return
      */
-    public static boolean isCommand(String message, Context context) {
+    public static boolean isCommand(String message, Context context) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         if (message != null || message.isEmpty()) {
             // Splitting the message
             String[] splitMessage = message.split(CommandFormatter.SEPARATOR);
