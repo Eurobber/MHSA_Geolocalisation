@@ -4,6 +4,9 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -26,6 +29,8 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.telephony.SmsMessage;
 import android.util.Log;
 import android.view.View;
@@ -33,10 +38,10 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.ece.iceageophone.main.BuildConfig;
+import com.ece.iceageophone.main.R;
 import com.ece.iceageophone.main.activity.HomeActivity;
 import com.ece.iceageophone.main.activity.LocateActivity;
 import com.ece.iceageophone.main.activity.alertdialog.DisabledGPSAlertDialogActivity;
-import com.ece.iceageophone.main.activity.alertdialog.InstructionsAlertDialogActivity;
 import com.ece.iceageophone.main.exception.MessageFormatException;
 import com.ece.iceageophone.main.util.Command;
 import com.ece.iceageophone.main.util.CommandFormatter;
@@ -274,14 +279,31 @@ public class SmsListener extends BroadcastReceiver implements LocationListener, 
     }
 
     /**
-     *
+     * Display a notification message on lock screen and status bar
      * @param context
      * @param instructions
      */
     private void display(Context context, String instructions) {
-        Intent i = new Intent(context, InstructionsAlertDialogActivity.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(i);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+                .setSmallIcon(R.mipmap.ic_launcher) // Icon
+                .setContentTitle(context.getResources().getString(R.string.app_name)) // Title
+                .setContentText(instructions) // Message
+                .setAutoCancel(true) // Clear notification after click
+                .setPriority(Notification.PRIORITY_MAX) // Show at the top
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC); // Show the notification full content
+
+        // Click on notification redirects to home
+        Intent intent = new Intent(context, HomeActivity.class);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        stackBuilder.addParentStack(HomeActivity.class);
+        // Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(intent);
+        PendingIntent pi = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(pi);
+
+        // Show notification
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(0, builder.build());
     }
 
     /**
