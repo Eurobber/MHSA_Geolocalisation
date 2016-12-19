@@ -120,8 +120,7 @@ public class LocateActivity extends AppCompatActivity
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
+     * This is where we can add markers or lines, add listeners or move the camera.
      * If Google Play services is not installed on the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
@@ -133,8 +132,7 @@ public class LocateActivity extends AppCompatActivity
         // Add a market on the target position and move the camera
         LatLng target = new LatLng(targetLocation.getLatitude(), targetLocation.getLongitude());
         this.googleMap.addMarker(new MarkerOptions().position(target).title("Target phone"));
-        this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(target));
-        this.googleMap.animateCamera(CameraUpdateFactory.zoomTo(16.0f));
+        this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(target, 16.0f));
     }
 
     @Override
