@@ -122,9 +122,9 @@ public class HistoryActivity extends AppCompatActivity
             intent = new Intent(getApplicationContext(), ContactActivity.class);
         } else if(id == R.id.locate) {
             intent = new Intent(getApplicationContext(), LocateActivity.class);
-        } else if(id == R.id.secure) {
-            intent = new Intent(getApplicationContext(), ScanActivity.class);
         } else if(id == R.id.scan) {
+            intent = new Intent(getApplicationContext(), ScanActivity.class);
+        } else if(id == R.id.secure) {
             intent = new Intent(getApplicationContext(), SecureActivity.class);
         } else if(id == R.id.history) {
             intent = new Intent(getApplicationContext(), HistoryActivity.class);
