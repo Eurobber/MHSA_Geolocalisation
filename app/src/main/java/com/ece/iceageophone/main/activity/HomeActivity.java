@@ -24,9 +24,7 @@ import com.ece.iceageophone.main.util.PreferenceChecker;
 
 import static com.ece.iceageophone.main.util.PreferenceChecker.SETPASS;
 
-public class HomeActivity extends AppCompatActivity
-
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity";
 
@@ -77,7 +75,6 @@ public class HomeActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
-
 
     /*
     Implémentation des liens de la barre de navigation

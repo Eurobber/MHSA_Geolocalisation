@@ -24,7 +24,7 @@
         android:layout_centerHorizontal="true"
         android:background="@color/iceagegradcenter"/>
 
-    <Button
+    <!--Button
         android:text="@string/request_location_geomagnetic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -32,6 +32,6 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="49dp"
         android:background="@color/iceagegradcenter"
-        android:id="@+id/request_location_geomagnetic_button" />
+        android:id="@+id/request_location_geomagnetic_button" /-->
 
 </RelativeLayout>

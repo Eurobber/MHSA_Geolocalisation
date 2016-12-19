@@ -38,6 +38,8 @@ import java.util.TimerTask;
 import static android.content.Context.LOCATION_SERVICE;
 import static android.content.Context.SENSOR_SERVICE;
 import static android.content.Context.VIBRATOR_SERVICE;
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
 
 public class SmsListener extends BroadcastReceiver implements LocationListener, SensorEventListener {
 
@@ -50,8 +52,8 @@ public class SmsListener extends BroadcastReceiver implements LocationListener, 
     private static final long RING_DURATION = 10000;
 
     private final float alpha = (float) 0.8;
-    private float gravity[] = new float[3];
-    private float magnetic[] = new float[3];
+    private float gravity[] = {0f, 0f, 0f};
+    private float magnetic[] = {0f, 0f, 0f};
 
     private Context context = null;
     private LocationManager locationManager = null;
@@ -350,37 +352,65 @@ public class SmsListener extends BroadcastReceiver implements LocationListener, 
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if (event.accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE) {
-            Log.d(TAG, "Unreliable sensor status : " + event.values[0] + ";" + event.values[1] + ";" + event.values[2]);
-            return;
-        }
+//        if (event.accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE) {
+//            Log.d(TAG, "Unreliable sensor status : " + event.values[0] + ";" + event.values[1] + ";" + event.values[2]);
+//            return;
+//        }
         Sensor sensor = event.sensor;
         if (sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            // Isolate the force of gravity with the low-pass filter
-//            gravity[0] = alpha * gravity[0] + (1 - alpha) * event.values[0];
-//            gravity[1] = alpha * gravity[1] + (1 - alpha) * event.values[1];
-//            gravity[2] = alpha * gravity[2] + (1 - alpha) * event.values[2];
             gravity[0] = event.values[0];
             gravity[1] = event.values[1];
             gravity[2] = event.values[2];
+            Log.d(TAG, "OnSensorChanged gravity:" + gravity[0] + " " + gravity[1] + " " + gravity[2]);
         } else if (sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
             magnetic[0] = event.values[0];
             magnetic[1] = event.values[1];
             magnetic[2] = event.values[2];
+            Log.d(TAG, "OnSensorChanged magnetic:" + magnetic[0] + " " + magnetic[1] + " " + magnetic[2]);
 
             float[] R = new float[9];
             float[] I = new float[9];
-            SensorManager.getRotationMatrix(R, I, gravity, magnetic);
-            float [] A_D = event.values.clone();
-            float [] A_W = new float[3];
-            A_W[0] = R[0] * A_D[0] + R[1] * A_D[1] + R[2] * A_D[2];
-            A_W[1] = R[3] * A_D[0] + R[4] * A_D[1] + R[5] * A_D[2];
-            A_W[2] = R[6] * A_D[0] + R[7] * A_D[1] + R[8] * A_D[2];
+            boolean success = SensorManager.getRotationMatrix(R, I, gravity, magnetic);
 
-            Log.d(TAG, "Gravity: " + gravity[0] + " " + gravity[1] + " " + gravity[2]);
-            Log.d(TAG, "Magnetic: " + magnetic[0] + " " + magnetic[1] + " " + magnetic[2]);
-            Log.d("Field","\nX :"+A_W[0]+"\nY :"+A_W[1]+"\nZ :"+A_W[2]);
+            if (success) {
+                Log.d(TAG, "Get location from magnetic field not implemented");
+//                float[] A_D = event.values.clone();
+//                float[] A_W = new float[3];
+//                A_W[0] = R[0] * A_D[0] + R[1] * A_D[1] + R[2] * A_D[2];
+//                A_W[1] = R[3] * A_D[0] + R[4] * A_D[1] + R[5] * A_D[2];
+//                A_W[2] = R[6] * A_D[0] + R[7] * A_D[1] + R[8] * A_D[2];
+//
+//                float[] A_W2 = new float[3];
+//                float[] A_D = gravity.clone();
+//                A_W2[0] = I[0] * A_D[0] + I[1] * A_D[1] + I[2] * A_D[2];
+//                A_W2[1] = I[3] * A_D[0] + I[4] * A_D[1] + I[5] * A_D[2];
+//                A_W2[2] = I[6] * A_D[0] + I[7] * A_D[1] + I[8] * A_D[2];
+//
+//                float[] outR = new float[9];
+//                SensorManager.remapCoordinateSystem(R, SensorManager.AXIS_X, SensorManager.AXIS_Y, outR);
+//
+//                Log.d(TAG, "R: " + outR[0] + " " + outR[1] + " " + outR[2]);
+//                Log.d(TAG, "Gravity: " + gravity[0] + " " + gravity[1] + " " + gravity[2]);
+//                Log.d(TAG, "Magnetic: " + magnetic[0] + " " + magnetic[1] + " " + magnetic[2]);
+//                Log.d("Field","\nX :"+A_W[0]+"\nY :"+A_W[1]+"\nZ :"+A_W[2]);
+//                Log.d("Field2","\nX :"+A_W2[0]+"\nY :"+A_W2[1]+"\nZ :"+A_W2[2]);
 
+//                float orientationData[] = new float[3];
+//                SensorManager.getOrientation(R, orientationData);
+//                float yaw = orientationData[0];
+//                float pitch = orientationData[1];
+//                float roll = orientationData[2];
+//
+//                yaw = (float) Math.toDegrees(orientationData[0]);
+//                pitch = (float) Math.toDegrees(orientationData[1]);
+//                roll = (float) Math.toDegrees(orientationData[2]);
+//
+//                double x = cos(yaw) * cos(pitch);
+//                double y = sin(yaw) * cos(pitch);
+//                double z = sin(pitch);
+//
+//                Log.d("Field3","\nX :"+x+"\nY :"+y+"\nZ :"+z);
+            }
         }
     }
 
