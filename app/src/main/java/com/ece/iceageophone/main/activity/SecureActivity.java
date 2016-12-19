@@ -24,6 +24,8 @@ import com.ece.iceageophone.main.util.Command;
 import com.ece.iceageophone.main.util.CommandSender;
 import com.ece.iceageophone.main.util.CustomAdminReceiver;
 import com.ece.iceageophone.main.util.PreferenceChecker;
+
+import static android.R.attr.data;
 import static com.ece.iceageophone.main.util.PreferenceChecker.*;
 
 public class SecureActivity extends AppCompatActivity
@@ -72,7 +74,7 @@ public class SecureActivity extends AppCompatActivity
         onAdmin = (Button) findViewById(R.id.BtnAdminRights);
         offAdmin = (Button) findViewById(R.id.BtnDisableAdmin);
 
-        mDPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
+        mDPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
         mCN = new ComponentName(SecureActivity.this, CustomAdminReceiver.class);
         getRemote();
 
@@ -88,19 +90,7 @@ public class SecureActivity extends AppCompatActivity
                 intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, hint);
                 startActivityForResult(intent, ADMIN_INTENT);
             }
-
-            protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-                if (requestCode == ADMIN_INTENT) {
-                    if (resultCode == RESULT_OK) {
-                        Toast.makeText(SecureActivity.this, "Your phone is now remotely lockable. Can't uninstall the app.", Toast.LENGTH_SHORT).show();
-                        LogRecord.addRecord(getApplicationContext(), 9, null, null);
-                    }else{
-                        Toast.makeText(SecureActivity.this, "Couldn't grant administrator privileges.", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
         });
-
         /**
          *   Disables admin privileges on this phone
          */
@@ -134,6 +124,21 @@ public class SecureActivity extends AppCompatActivity
             TVResultPhone.setText(PreferenceChecker.getPreferences(this).getString(SETTGT, null));
         }else TVResultPhone.setText("Not set (@Settings)");
     }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == ADMIN_INTENT) {
+            if (resultCode == RESULT_OK ) {
+                Toast.makeText(SecureActivity.this, "Your phone is now remotely lockable. Can't uninstall the app.", Toast.LENGTH_SHORT).show();
+                LogRecord.addRecord(getApplicationContext(), 9, null, null);
+            }else{
+                Toast.makeText(SecureActivity.this, "Couldn't grant administrator privileges.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
 
     @Override
     public void onBackPressed() {

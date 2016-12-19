@@ -104,8 +104,8 @@ public class PreferenceChecker {
                 .putString(INSTRUCTIONS, instructions)
                 .apply();
         if(getPreferences(a).contains(INSTRUCTIONS)){
-            Toast.makeText(a, "Received new instructions !", Toast.LENGTH_SHORT).show();
-            Log.d(TAG, "Received new instructions !");
+            Toast.makeText(a, "Set new instructions !", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "Set new instructions !");
         }
     }
 

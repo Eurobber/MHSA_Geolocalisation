@@ -48,6 +48,7 @@ import com.ece.iceageophone.main.util.CommandFormatter;
 import com.ece.iceageophone.main.util.CommandSender;
 import com.ece.iceageophone.main.util.CustomAdminReceiver;
 import com.ece.iceageophone.main.util.PreferenceChecker;
+import com.ece.iceageophone.main.util.SmsSender;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -147,7 +148,7 @@ public class SmsListener extends BroadcastReceiver implements LocationListener, 
                     display(context, splitMessage[3]);
                     break;
                 case LOCK:
-                    lock(context);
+                    lock(context, senderNum);
                 default:
                     break;
             }
@@ -283,6 +284,7 @@ public class SmsListener extends BroadcastReceiver implements LocationListener, 
      * @param context
      * @param instructions
      */
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void display(Context context, String instructions) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.mipmap.ic_launcher) // Icon
@@ -309,8 +311,9 @@ public class SmsListener extends BroadcastReceiver implements LocationListener, 
     /**
      *
      * @param context
+     * @param senderNum
      */
-    private void lock(Context context) {
+    private void lock(Context context, String senderNum) {
         // Has to be admin or exception
         DevicePolicyManager DPM = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
         ComponentName CN = new ComponentName(context, CustomAdminReceiver.class);
@@ -318,8 +321,10 @@ public class SmsListener extends BroadcastReceiver implements LocationListener, 
         boolean isAdmin = DPM.isAdminActive(CN);
         if (isAdmin) {
             DPM.lockNow();
+            SmsSender.sendSms(senderNum, "Ice-A-GeOPhone feedback : Remote phone was successfully locked.");
         }else{
             Toast.makeText(context, "Phone lock request rejected : needs admin rights.", Toast.LENGTH_SHORT).show();
+            SmsSender.sendSms(senderNum, "Ice-A-GeOPhone feedback : Phone lock request rejected : needs admin rights.");
         }
     }
 
