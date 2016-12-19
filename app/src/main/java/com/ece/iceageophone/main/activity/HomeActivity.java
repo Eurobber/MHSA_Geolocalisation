@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -13,16 +12,17 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ece.iceageophone.main.R;
-import com.ece.iceageophone.main.util.Command;
-import com.ece.iceageophone.main.util.CommandSender;
 import com.ece.iceageophone.main.util.PreferenceChecker;
 
+import static com.ece.iceageophone.main.util.PreferenceChecker.CACHEALT;
+import static com.ece.iceageophone.main.util.PreferenceChecker.CACHELAT;
+import static com.ece.iceageophone.main.util.PreferenceChecker.CACHELONG;
 import static com.ece.iceageophone.main.util.PreferenceChecker.SETPASS;
+import static com.ece.iceageophone.main.util.PreferenceChecker.SETTGT;
 
 public class HomeActivity extends AppCompatActivity
 
@@ -30,10 +30,11 @@ public class HomeActivity extends AppCompatActivity
 
     private static final String TAG = "MainActivity";
 
-    private EditText phoneNumberEditText;
-    private EditText smsBodyEditText;
+    private TextView TVResultPhone;
+    private TextView TVResultLat;
+    private TextView TVResultLong;
+    private TextView TVResultAlt;
 
-    private Button sendSmsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +59,8 @@ public class HomeActivity extends AppCompatActivity
                     Manifest.permission.RECEIVE_SMS,
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.VIBRATE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.CLEAR_APP_CACHE},
                 1);
 
         // If password has never been set or is not in Shared Preferences file
@@ -128,6 +130,30 @@ public class HomeActivity extends AppCompatActivity
         super.onStart();
         Log.d(TAG, "Starting application");
 
+        TVResultPhone = (TextView) findViewById(R.id.TVResultphone);
+        TVResultLat = (TextView) findViewById(R.id.TVResultRMT);
+        TVResultLong = (TextView) findViewById(R.id.TVResultLong);
+        TVResultAlt = (TextView) findViewById(R.id.TVResultMine);
+
+        if(PreferenceChecker.getPreferences(this).contains(SETTGT))
+        {
+            TVResultPhone.setText(PreferenceChecker.getPreferences(this).getString(SETTGT, null));
+        }else TVResultPhone.setText("Not set (@Settings)");
+
+        if(PreferenceChecker.getPreferences(this).contains(CACHELAT))
+        {
+            TVResultLat.setText(PreferenceChecker.getPreferences(this).getString(CACHELAT, null));
+        }else TVResultLat.setText("Not found yet");
+
+        if(PreferenceChecker.getPreferences(this).contains(CACHELONG))
+        {
+            TVResultLong.setText(PreferenceChecker.getPreferences(this).getString(CACHELONG, null));
+        }else TVResultLong.setText("Not found yet");
+
+        if(PreferenceChecker.getPreferences(this).contains(CACHEALT))
+        {
+            TVResultAlt.setText(PreferenceChecker.getPreferences(this).getString(CACHEALT, null));
+        }else TVResultAlt.setText("Not found yet");
 
     }
 

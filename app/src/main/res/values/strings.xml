@@ -63,4 +63,12 @@
     <string name="target_phone_number">Target Phone Number</string>
     <string name="target_phone_password">Target Phone Password</string>
 
+    <!-- Home TextViews -->
+    <string name="telephone">Target Phone Number</string>
+    <string name="lastlatitude">Last Known Latitude</string>
+    <string name="lastlongitude">Last Known Longitude</string>
+    <string name="lastaltitude">Last Known Altitude</string>
+    <string name="not_found_yet">Not found yet</string>
+    <string name="not_set_settings">Not set (@Settings)</string>
+
 </resources>

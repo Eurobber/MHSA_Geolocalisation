@@ -1,16 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/content_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+
     tools:context="com.ece.iceageophone.main.activity.HomeActivity"
     tools:showIn="@layout/home_app_bar">
+
+    <ImageView
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:src="@mipmap/scrat"
+        android:gravity="center"
+        android:layout_alignBottom="@+id/TVResultMine"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:text="@string/not_found_yet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/TVResultMine"
+        android:textColor="@color/colorAccent"
+        android:layout_alignBaseline="@+id/TVMine"
+        android:layout_alignBottom="@+id/TVMine"
+        android:layout_alignLeft="@+id/TVResultRMT"
+        android:layout_alignStart="@+id/TVResultRMT" />
+
+    <TextView
+        android:text="@string/not_set_settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/TVResultphone"
+        android:textColor="@color/colorAccent"
+        android:layout_alignBaseline="@+id/TVTel"
+        android:layout_alignBottom="@+id/TVTel"
+        android:layout_alignLeft="@+id/TVResultRMT"
+        android:layout_alignStart="@+id/TVResultRMT" />
+
+    <TextView
+        android:text="@string/not_found_yet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/TVResultRMT"
+        android:layout_marginLeft="28dp"
+        android:layout_marginStart="28dp"
+        android:textColor="@color/colorAccent"
+        android:layout_alignBaseline="@+id/TVPos"
+        android:layout_alignBottom="@+id/TVPos"
+        android:layout_toRightOf="@+id/TVTel"
+        android:layout_toEndOf="@+id/TVTel" />
+
+    <TextView
+        android:text="@string/not_found_yet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/TVResultLong"
+        android:textColor="@color/colorAccent"
+        android:layout_alignBaseline="@+id/TVLong"
+        android:layout_alignBottom="@+id/TVLong"
+        android:layout_alignLeft="@+id/TVResultRMT"
+        android:layout_alignStart="@+id/TVResultRMT" />
+
+    <TextView
+        android:text="@string/lastlatitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/TVPos"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="normal|bold"
+        android:textAlignment="center"
+        android:layout_marginBottom="32dp"
+        android:layout_above="@+id/TVLong"
+        android:layout_alignLeft="@+id/TVMine"
+        android:layout_alignStart="@+id/TVMine" />
+
+    <TextView
+        android:text="@string/lastaltitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/TVMine"
+        android:layout_marginBottom="52dp"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="normal|bold"
+        android:textAlignment="center"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/TVLong"
+        android:layout_alignEnd="@+id/TVLong" />
+
+    <TextView
+        android:text="@string/telephone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="53dp"
+        android:layout_marginStart="53dp"
+        android:id="@+id/TVTel"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="normal|bold"
+        android:textAlignment="center"
+        android:layout_marginTop="89dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:text="@string/lastlongitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/TVLong"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="normal|bold"
+        android:layout_marginBottom="33dp"
+        android:layout_above="@+id/TVResultMine"
+        android:layout_toLeftOf="@+id/TVResultRMT"
+        android:layout_toStartOf="@+id/TVResultRMT" />
+
 
 </RelativeLayout>

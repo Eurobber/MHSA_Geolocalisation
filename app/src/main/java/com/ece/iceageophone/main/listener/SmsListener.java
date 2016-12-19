@@ -31,6 +31,7 @@ import com.ece.iceageophone.main.exception.MessageFormatException;
 import com.ece.iceageophone.main.util.Command;
 import com.ece.iceageophone.main.util.CommandFormatter;
 import com.ece.iceageophone.main.util.CommandSender;
+import com.ece.iceageophone.main.util.PreferenceChecker;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -226,6 +227,11 @@ public class SmsListener extends BroadcastReceiver implements LocationListener, 
     private void processLocation(Context context, String locationMessage) {
         try {
             Location location = CommandFormatter.parseLocationMessage(locationMessage);
+
+            // Store values in cache
+            PreferenceChecker.setRemoteLat(context, String.valueOf(location.getLatitude()));
+            PreferenceChecker.setRemoteLong(context, String.valueOf(location.getLongitude()));
+            PreferenceChecker.setRemoteAlt(context, String.valueOf(location.getAltitude()));
 
             Log.d(TAG, "Show location on map");
 
