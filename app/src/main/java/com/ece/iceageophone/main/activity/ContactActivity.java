@@ -90,6 +90,7 @@ public class ContactActivity extends AppCompatActivity
                 }
                 else
                 {
+                    PreferenceChecker.setRemoteInstructions(ContactActivity.this, instructions.getText().toString());
                     CommandSender.sendCommand(Command.INSTRUCTIONS, remoteNumber, remotePassword, instructions.getText().toString());
                     Toast.makeText(ContactActivity.this, "Instructions sent to "+remoteNumber, Toast.LENGTH_SHORT).show();
                     LogRecord.addRecord(getApplicationContext(), 4, instructions.getText().toString(), remoteNumber);
