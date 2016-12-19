@@ -2,7 +2,11 @@ package com.ece.iceageophone.main.listener;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -20,17 +24,24 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.telephony.SmsMessage;
 import android.util.Log;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.ece.iceageophone.main.BuildConfig;
+import com.ece.iceageophone.main.activity.HomeActivity;
 import com.ece.iceageophone.main.activity.LocateActivity;
 import com.ece.iceageophone.main.activity.alertdialog.DisabledGPSAlertDialogActivity;
+import com.ece.iceageophone.main.activity.alertdialog.InstructionsAlertDialogActivity;
 import com.ece.iceageophone.main.exception.MessageFormatException;
 import com.ece.iceageophone.main.util.Command;
 import com.ece.iceageophone.main.util.CommandFormatter;
 import com.ece.iceageophone.main.util.CommandSender;
+import com.ece.iceageophone.main.util.CustomAdminReceiver;
 import com.ece.iceageophone.main.util.PreferenceChecker;
 
 import java.util.Timer;
@@ -39,8 +50,6 @@ import java.util.TimerTask;
 import static android.content.Context.LOCATION_SERVICE;
 import static android.content.Context.SENSOR_SERVICE;
 import static android.content.Context.VIBRATOR_SERVICE;
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
 
 public class SmsListener extends BroadcastReceiver implements LocationListener, SensorEventListener {
 
@@ -129,6 +138,11 @@ public class SmsListener extends BroadcastReceiver implements LocationListener, 
                 case RING:
                     ring(context);
                     break;
+                case INSTRUCTIONS:
+                    display(context, splitMessage[3]);
+                    break;
+                case LOCK:
+                    lock(context);
                 default:
                     break;
             }
@@ -257,6 +271,34 @@ public class SmsListener extends BroadcastReceiver implements LocationListener, 
         Vibrator vibrator = (Vibrator) context.getSystemService(VIBRATOR_SERVICE);
         long[] pattern = {0, 2000, 1000, 2000, 1000, 2000, 1000};
         vibrator.vibrate(pattern, -1);
+    }
+
+    /**
+     *
+     * @param context
+     * @param instructions
+     */
+    private void display(Context context, String instructions) {
+        Intent i = new Intent(context, InstructionsAlertDialogActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(i);
+    }
+
+    /**
+     *
+     * @param context
+     */
+    private void lock(Context context) {
+        // Has to be admin or exception
+        DevicePolicyManager DPM = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+        ComponentName CN = new ComponentName(context, CustomAdminReceiver.class);
+
+        boolean isAdmin = DPM.isAdminActive(CN);
+        if (isAdmin) {
+            DPM.lockNow();
+        }else{
+            Toast.makeText(context, "Phone lock request rejected : needs admin rights.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**

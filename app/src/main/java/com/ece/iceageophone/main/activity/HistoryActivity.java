@@ -7,37 +7,29 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.ece.iceageophone.main.R;
-import com.ece.iceageophone.main.data.LogRecord;
 import com.ece.iceageophone.main.util.PreferenceChecker;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
-import static android.R.id.input;
 import static com.ece.iceageophone.main.util.PreferenceChecker.SETPASS;
 
 public class HistoryActivity extends AppCompatActivity
@@ -131,9 +123,9 @@ public class HistoryActivity extends AppCompatActivity
         } else if(id == R.id.locate) {
             intent = new Intent(getApplicationContext(), LocateActivity.class);
         } else if(id == R.id.secure) {
-            intent = new Intent(getApplicationContext(), SecureActivity.class);
-        } else if(id == R.id.scan) {
             intent = new Intent(getApplicationContext(), ScanActivity.class);
+        } else if(id == R.id.scan) {
+            intent = new Intent(getApplicationContext(), SecureActivity.class);
         } else if(id == R.id.history) {
             intent = new Intent(getApplicationContext(), HistoryActivity.class);
         } else if(id == R.id.settings) {

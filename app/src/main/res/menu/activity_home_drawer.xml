@@ -18,12 +18,8 @@
             android:id="@+id/secure"
             android:icon="@drawable/ic_secure"
             android:title="@string/secure_screen" />
-        <item
-            android:id="@+id/scan"
-            android:icon="@drawable/ic_scan"
-            android:title="@string/scan_screen"/>
     </group>
-    <item android:title="More options">
+    <item android:title="@string/more_options">
         <menu>
             <item
                 android:id="@+id/history"

@@ -58,14 +58,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.VIBRATE,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.CLEAR_APP_CACHE},
+                    Manifest.permission.CLEAR_APP_CACHE,
+                    Manifest.permission.SYSTEM_ALERT_WINDOW},
                 1);
-
-        // If password has never been set or is not in Shared Preferences file
-        if (!PreferenceChecker.getPreferences(this).contains(SETPASS)) {
-            // Display a small text message to prompt the user for a new password
-            Toast.makeText(this, "You must enter a new password", Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override

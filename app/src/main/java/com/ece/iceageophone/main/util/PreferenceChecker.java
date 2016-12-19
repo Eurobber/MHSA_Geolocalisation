@@ -21,6 +21,8 @@ public class PreferenceChecker {
     public static final String CACHELONG = "TARGET_LONGITUDE";
     public static final String CACHEALT = "TARGET_ALTITUDE";
 
+    public static final String INSTRUCTIONS = "LOCAL_INSTRUCTIONS";
+
     public static final String TAG = "PreferenceChecker";
 
     public static SharedPreferences getPreferences(Context a){
@@ -93,6 +95,17 @@ public class PreferenceChecker {
         if(getPreferences(a).contains(SETTGTPASS)){
             Toast.makeText(a, "Successfully stored new remote password !", Toast.LENGTH_SHORT).show();
             Log.d(TAG, "Successfully stored new remote password !");
+        }
+    }
+
+    public static void setRemoteInstructions(Context a, String instructions){
+        getPreferences(a)
+                .edit()
+                .putString(INSTRUCTIONS, instructions)
+                .apply();
+        if(getPreferences(a).contains(INSTRUCTIONS)){
+            Toast.makeText(a, "Received new instructions !", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "Received new instructions !");
         }
     }
 

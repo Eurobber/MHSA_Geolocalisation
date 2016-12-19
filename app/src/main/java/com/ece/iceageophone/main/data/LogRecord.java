@@ -40,30 +40,35 @@ public class LogRecord {
         }
 
         switch(type){
-            case 1: // SMS Sent
-                content = "Sent SMS \""+param1+"\" to "+param2;
+            case 1: // First password
+                content = "(Local) Set a password for the first time.";
                 break;
             case 2: // Vibrate Request
-                content = "Requested vibration from "+param2;
+                content = "(Remote) Requested vibration from "+param2;
                 break;
             case 3: // Ring request
-                content = "Requested ringing from "+param2;
+                content = "(Remote) Requested ringing from "+param2;
                 break;
             case 4: // Instructions sent
-                content = "Displayed instructions \""+param1+"\" on "+param2+"\'s screen";
+                content = "(Remote) Displayed instructions \""+param1+"\" on "+param2+"\'s screen";
                 break;
             case 5: // Geolocalisation
-                content = "Tried to locate through GPS number "+param2;
+                content = "(Remote) Tried to locate through GPS number "+param2;
                 break;
             case 6: // Geolocation through magnetic field
-                content = "Tried to locate through magnetic field number "+param2;
+                content = "(Remote) Tried to locate through magnetic field number "+param2;
                 break;
             case 7:
-                content = "Received positive response from "+param2+" on"+param1+" request";
+                content = "(Local) Changed password.";
                 break;
             case 8:
-                content = "Received no response from "+param2+" on"+param1+" request";
+                content = "(Remote) Lock request sent to "+param2;
                 break;
+            case 9:
+                content = "(Local) Granted admin privileges.";
+                break;
+            case 10:
+                content = "(Local) Removed admin privileges.";
             default:
                 break;
 

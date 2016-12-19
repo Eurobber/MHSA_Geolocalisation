@@ -70,5 +70,14 @@
     <string name="lastaltitude">Last Known Altitude</string>
     <string name="not_found_yet">Not found yet</string>
     <string name="not_set_settings">Not set (@Settings)</string>
+    <string name="hintInstructions">Enter your instructions here then click Send Instructions. If your phone has been stolen, do not provide any personal information.</string>
+    <string name="remoteLock">Remote Lock</string>
+    <string name="lockText">Locks the target device\'s screen. If you want to display a message on the locked screen, consider using Send Instructions instead.</string>
+    <string name="more_options">More options</string>
+    <string name="admin_rights">Give Local Admin Privileges</string>
+    <string name="explanation">CAUTION : if you give the admin rights, your phone will be remotely lockable. That could be useful in case of robbery.</string>
+    <string name="removeadmin">Remove Local Admin Rights</string>
+    <string name="disableexplanation">This will remove the local admin rights. Press this if you encounter trouble uninstalling the app, or don\'t want your phone to be remotely lockable.</string>
+    <string name="important">IMPORTANT</string>
 
 </resources>

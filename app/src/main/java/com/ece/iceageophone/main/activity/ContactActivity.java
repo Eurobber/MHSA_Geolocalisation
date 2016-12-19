@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.ece.iceageophone.main.R;
@@ -19,6 +20,7 @@ import com.ece.iceageophone.main.util.Command;
 import com.ece.iceageophone.main.util.CommandSender;
 import com.ece.iceageophone.main.util.PreferenceChecker;
 
+import static android.text.TextUtils.isEmpty;
 import static com.ece.iceageophone.main.util.PreferenceChecker.SETPASS;
 import static com.ece.iceageophone.main.util.PreferenceChecker.SETTGT;
 import static com.ece.iceageophone.main.util.PreferenceChecker.SETTGTPASS;
@@ -29,6 +31,7 @@ public class ContactActivity extends AppCompatActivity
     private Button vibrateButton = null;
     private Button ringButton = null;
     private Button sendInstructionsButton = null;
+    private EditText instructions = null;
 
     private String remoteNumber;
     private String remotePassword;
@@ -52,6 +55,7 @@ public class ContactActivity extends AppCompatActivity
         this.vibrateButton = (Button) findViewById(R.id.vibrate_button);
         this.ringButton = (Button) findViewById(R.id.ring_button);
         this.sendInstructionsButton = (Button) findViewById(R.id.send_instructions_button);
+        this.instructions = (EditText) findViewById(R.id.ETInstructions);
 
         vibrateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,10 +84,16 @@ public class ContactActivity extends AppCompatActivity
             public void onClick(View v) {
                 // Send instructions command
                 getRemote();
-                Toast.makeText(ContactActivity.this, "Instructions sent to "+remoteNumber, Toast.LENGTH_SHORT).show();
-                LogRecord.addRecord(getApplicationContext(), 4, null, remoteNumber);
-                /*CommandSender.sendCommand("Follow these instructions !", remoteNumber, remotePassword);*/
-
+                if(isEmpty(instructions.getText().toString()))
+                {
+                    Toast.makeText(ContactActivity.this, "Cannot send empty instructions !", Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    CommandSender.sendCommand(Command.INSTRUCTIONS, remoteNumber, remotePassword, instructions.getText().toString());
+                    Toast.makeText(ContactActivity.this, "Instructions sent to "+remoteNumber, Toast.LENGTH_SHORT).show();
+                    LogRecord.addRecord(getApplicationContext(), 4, instructions.getText().toString(), remoteNumber);
+                }
             }
         });
 

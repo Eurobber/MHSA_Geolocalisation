@@ -12,7 +12,7 @@
     tools:openDrawer="start">
 
     <include
-        layout="@layout/home_app_bar"
+        layout="@layout/secure_app_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

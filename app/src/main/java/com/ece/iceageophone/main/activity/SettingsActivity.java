@@ -1,8 +1,6 @@
 package com.ece.iceageophone.main.activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,9 +18,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.ece.iceageophone.main.R;
+import com.ece.iceageophone.main.data.LogRecord;
 import com.ece.iceageophone.main.util.PreferenceChecker;
-
-import java.util.Set;
 
 import static android.text.TextUtils.isEmpty;
 import static com.ece.iceageophone.main.R.id.ETNew;
@@ -30,9 +27,8 @@ import static com.ece.iceageophone.main.R.id.ETOld;
 import static com.ece.iceageophone.main.R.id.ETPhone;
 import static com.ece.iceageophone.main.R.id.ETPhonePwd;
 import static com.ece.iceageophone.main.R.id.saveSettingsBtn;
+import static com.ece.iceageophone.main.R.id.spinnerApp;
 import static com.ece.iceageophone.main.util.PreferenceChecker.SETPASS;
-import static com.ece.iceageophone.main.util.PreferenceChecker.SETTGT;
-import static com.ece.iceageophone.main.util.PreferenceChecker.SETTGTPASS;
 
 public class SettingsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -47,6 +43,7 @@ public class SettingsActivity extends AppCompatActivity
     private EditText newPwd;
     private EditText localPwd;
     private Button submit;
+    private Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,19 +103,19 @@ public class SettingsActivity extends AppCompatActivity
 
         Intent intent = null;
 
-        if (id == R.id.home) {
+        if (id == R.id.home){
             intent = new Intent(getApplicationContext(), HomeActivity.class);
-        } else if (id == R.id.contact) {
+        } else if(id == R.id.contact) {
             intent = new Intent(getApplicationContext(), ContactActivity.class);
-        } else if (id == R.id.locate) {
+        } else if(id == R.id.locate) {
             intent = new Intent(getApplicationContext(), LocateActivity.class);
-        } else if (id == R.id.secure) {
+        } else if(id == R.id.secure) {
             intent = new Intent(getApplicationContext(), SecureActivity.class);
-        } else if (id == R.id.scan) {
+        } else if(id == R.id.scan) {
             intent = new Intent(getApplicationContext(), ScanActivity.class);
-        } else if (id == R.id.history) {
+        } else if(id == R.id.history) {
             intent = new Intent(getApplicationContext(), HistoryActivity.class);
-        } else if (id == R.id.settings) {
+        } else if(id == R.id.settings) {
             intent = new Intent(getApplicationContext(), SettingsActivity.class);
         }
 
@@ -142,10 +139,15 @@ public class SettingsActivity extends AppCompatActivity
         newPwd = (EditText) findViewById(ETNew);
         localPwd = (EditText) findViewById(ETOld);
         submit = (Button) findViewById(saveSettingsBtn);
+        spinner = (Spinner) findViewById(spinnerApp);
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if(spinner.getSelectedItem().toString()=="Off"){
+                    finish();
+                }
 
                 // If password has never been set or is not in Shared Preferences file
                 if(!PreferenceChecker.getPreferences(SettingsActivity.this).contains(SETPASS))
@@ -155,6 +157,8 @@ public class SettingsActivity extends AppCompatActivity
                     {
                         if(newPwd.getText().toString().equals(localPwd.getText().toString())){
                             PreferenceChecker.setPassword(SettingsActivity.this, newPwd.getText().toString());
+                            Toast.makeText(SettingsActivity.this, "Password defined !", Toast.LENGTH_SHORT).show();
+                            LogRecord.addRecord(SettingsActivity.this, 1, null, null);
                         }
                         else{
                             Toast.makeText(SettingsActivity.this, "Passwords don't match.", Toast.LENGTH_SHORT).show();
@@ -195,7 +199,7 @@ public class SettingsActivity extends AppCompatActivity
                         }
                     }
 
-                    else{
+                    else if (spinner.getSelectedItem().toString()!="Off"){
                         if(isEmpty(localPwd.getText().toString()) || isEmpty(newPwd.getText().toString())){
                             Toast.makeText(SettingsActivity.this, "Please enter a new password along with the old one.", Toast.LENGTH_SHORT).show();
                             Log.e(TAG, "Please enter a new password along with the old one.");
@@ -207,6 +211,7 @@ public class SettingsActivity extends AppCompatActivity
                                 newPwd.getText().clear();
                                 localPwd.getText().clear();
                                 Toast.makeText(SettingsActivity.this, "Password successfully changed", Toast.LENGTH_SHORT).show();
+                                LogRecord.addRecord(SettingsActivity.this, 7, null, null);
                                 Log.d(TAG, "Password successfully changed to "+PreferenceChecker.getPreferences(SettingsActivity.this).getString(SETPASS, null));
                             }
                             else{

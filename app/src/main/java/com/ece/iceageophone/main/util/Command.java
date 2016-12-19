@@ -5,7 +5,9 @@ public enum Command {
     GET_GPS_LOCATION("gps_location"),
     GET_GEOMAGNETIC_LOCATION("geomagnetic_location"),
     VIBRATE("vibrate"),
-    RING("ring");
+    RING("ring"),
+    INSTRUCTIONS("display"),
+    LOCK("lock");
 
     private String commandName;
 
