@@ -284,7 +284,6 @@ public class SmsListener extends BroadcastReceiver implements LocationListener, 
      * @param context
      * @param instructions
      */
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void display(Context context, String instructions) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.mipmap.ic_launcher) // Icon
