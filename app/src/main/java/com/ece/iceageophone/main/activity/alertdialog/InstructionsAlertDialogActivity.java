@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 
 import com.ece.iceageophone.main.activity.SettingsActivity;
 import com.ece.iceageophone.main.util.PreferenceChecker;
@@ -15,9 +16,13 @@ import static com.ece.iceageophone.main.util.PreferenceChecker.SETPASS;
 
 public class InstructionsAlertDialogActivity extends Activity {
 
+    private static final String TAG = "InstructionsAlertDialog";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.d(TAG, "Displaying instructions");
 
         // Prompt user to enable GPS on Settings
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(InstructionsAlertDialogActivity.this);

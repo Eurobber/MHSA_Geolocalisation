@@ -60,7 +60,12 @@
         </activity>
         <activity
             android:name=".activity.alertdialog.DisabledGPSAlertDialogActivity"
-            android:label="Alert"
+            android:label="Disabled_GPS_Alert"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".activity.alertdialog.InstructionsAlertDialogActivity"
+            android:label="Instructions_Alert"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
