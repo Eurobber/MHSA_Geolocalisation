@@ -112,9 +112,17 @@ public class SecureActivity extends AppCompatActivity
         this.rmtLock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CommandSender.sendCommand(Command.LOCK, remoteNumber, remotePassword);
-                Toast.makeText(SecureActivity.this, "Lock screen request sequent to "+remoteNumber, Toast.LENGTH_SHORT).show();
-                LogRecord.addRecord(getApplicationContext(), 8, null, remoteNumber);
+                if(PreferenceChecker.getPreferences(SecureActivity.this).contains(SETTGT))
+                {
+                    CommandSender.sendCommand(Command.LOCK, remoteNumber, remotePassword);
+                    Toast.makeText(SecureActivity.this, "Lock screen request sequent to "+remoteNumber, Toast.LENGTH_SHORT).show();
+                    LogRecord.addRecord(getApplicationContext(), 8, null, remoteNumber);
+                }
+
+                else{
+                    Toast.makeText(SecureActivity.this, "Please define a target in the settings before you attempt anything.", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 
